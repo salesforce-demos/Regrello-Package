@@ -1,67 +1,90 @@
+const SECTION_KEYS = {
+    DOCUMENT_SUBMISSION: 'Document Submission',
+    DOCUMENT_PROCESSING_AND_VERIFICATION: 'Document Processing and Verification',
+    COMPLIANCE_REVIEW: 'Compliance Review',
+    CONTRACT_GENERATION_AND_APPROVAL: 'Contract Generation and Approval',
+    FINANCE_APPROVAL: 'Finance Approval',
+    LEGAL_REVIEW: 'Legal Review',
+    CONTRACT_EXECUTION: 'Contract Execution',
+    ONBOARDING_AND_PROVISIONING: 'Onboarding and Provisioning',
+    IT_ESCALATION_REVIEW: 'IT Escalation Review'
+};
+
+const BLUEPRINT_SECTION_TITLES = [
+    SECTION_KEYS.DOCUMENT_SUBMISSION,
+    SECTION_KEYS.DOCUMENT_PROCESSING_AND_VERIFICATION,
+    SECTION_KEYS.COMPLIANCE_REVIEW,
+    SECTION_KEYS.CONTRACT_GENERATION_AND_APPROVAL,
+    SECTION_KEYS.FINANCE_APPROVAL,
+    SECTION_KEYS.LEGAL_REVIEW,
+    SECTION_KEYS.CONTRACT_EXECUTION,
+    SECTION_KEYS.ONBOARDING_AND_PROVISIONING,
+    SECTION_KEYS.IT_ESCALATION_REVIEW
+];
+
+const SECTION_ROWS = {
+    [SECTION_KEYS.DOCUMENT_SUBMISSION]: [
+        { title: 'Submit Onboarding Forms', assignee: 'Service Provider Partner', startsDetail: 'When the stage starts', timeToComplete: '3 days' }
+    ],
+    [SECTION_KEYS.DOCUMENT_PROCESSING_AND_VERIFICATION]: [
+        { title: 'Extract Insurance Details from Document', assignee: 'Document Agent', startsDetail: 'after Extract Tax Details from...', timeToComplete: 'No due date set' },
+        { title: 'Extract Tax Details from Document', assignee: 'Document Agent', startsDetail: 'When the stage starts', timeToComplete: 'No due date set' },
+        { title: 'Extract Compliance Details from Form', assignee: 'Document Agent', startsDetail: 'after Extract Insurance Detail...', timeToComplete: 'No due date set' },
+        { title: 'Validate Form Completeness', assignee: 'Excel Agent', startsDetail: 'after Extract Compliance Det...', timeToComplete: 'No due date set' },
+        { title: 'Check Against Procurement Data', assignee: 'Onboarding', startsDetail: 'When the stage starts', timeToComplete: '1 day' }
+    ],
+    [SECTION_KEYS.COMPLIANCE_REVIEW]: [
+        { title: 'Compliance Review', assignee: 'Compliance', startsDetail: 'When the stage starts', timeToComplete: '2 days' }
+    ],
+    [SECTION_KEYS.CONTRACT_GENERATION_AND_APPROVAL]: [
+        { title: 'Generate Draft Contract', assignee: 'Document Agent', startsDetail: 'When the stage starts', timeToComplete: 'No due date set' },
+        { title: 'Analyze Draft Contract for Approval', assignee: 'Excel Agent', startsDetail: 'after Generate Draft Contract', timeToComplete: 'No due date set' },
+        { title: 'Review and Approve Contract', assignee: 'Document Agent', startsDetail: 'after Analyze Draft Contract f...', timeToComplete: '1 day' }
+    ],
+    [SECTION_KEYS.FINANCE_APPROVAL]: [
+        { title: 'Finance Team Contract Approval', assignee: 'Finance', startsDetail: 'When the stage starts', timeToComplete: '2 days' }
+    ],
+    [SECTION_KEYS.LEGAL_REVIEW]: [
+        { title: 'Legal Team Contract Review', assignee: 'Legal', startsDetail: 'When the stage starts', timeToComplete: 'No due date set' }
+    ],
+    [SECTION_KEYS.CONTRACT_EXECUTION]: [
+        { title: 'Send Contract to Service Provider', assignee: 'None', startsDetail: 'When the stage starts', timeToComplete: '1 day' },
+        { title: 'Sign Contract', assignee: 'Service Provider Partner', startsDetail: 'after Send Contract to Servic...', timeToComplete: '5 days' }
+    ],
+    [SECTION_KEYS.ONBOARDING_AND_PROVISIONING]: [
+        { title: 'Conduct Onboarding Training & Verify Certificate', assignee: 'Onboarding Team', startsDetail: 'When the stage starts', timeToComplete: '1 day' },
+        { title: 'IT System Provisioning', assignee: 'IT Team', startsDetail: 'after Conduct Onboarding Tr...', timeToComplete: '1 day' }
+    ],
+    [SECTION_KEYS.IT_ESCALATION_REVIEW]: [
+        { title: 'IT Escalation Review', assignee: 'IT Team', startsDetail: 'When the stage starts', timeToComplete: '1 day' }
+    ]
+};
+
+const SECTION_HEADER_STARTS = {
+    [SECTION_KEYS.DOCUMENT_SUBMISSION]: { label: 'when the workflow starts', asLink: false },
+    [SECTION_KEYS.DOCUMENT_PROCESSING_AND_VERIFICATION]: { label: 'after the previous stage', asLink: false },
+    [SECTION_KEYS.COMPLIANCE_REVIEW]: { label: 'when 1 condition is met', asLink: true },
+    [SECTION_KEYS.CONTRACT_GENERATION_AND_APPROVAL]: { label: 'after the previous stage', asLink: false },
+    [SECTION_KEYS.FINANCE_APPROVAL]: { label: 'when 2 conditions are met', asLink: true },
+    [SECTION_KEYS.LEGAL_REVIEW]: { label: 'when 1 condition is met', asLink: true },
+    [SECTION_KEYS.CONTRACT_EXECUTION]: { label: 'when 1 condition is met', asLink: true },
+    [SECTION_KEYS.ONBOARDING_AND_PROVISIONING]: { label: 'after the previous stage', asLink: false },
+    [SECTION_KEYS.IT_ESCALATION_REVIEW]: { label: 'when 1 condition is met', asLink: true }
+};
+
+const SECTION_START_MODE = BLUEPRINT_SECTION_TITLES.reduce((acc, sectionTitle) => ({
+    ...acc,
+    [sectionTitle]: 'sequential'
+}), {});
+
 const GENERATE_BLUEPRINT_CONFIG = {
     INDUSTRY_OPTIONS: [
         'Automotive', 'Consumer Packaged Goods', 'Electronics', 'Fashion',
         'Healthcare', 'Oil and Gas', 'Pharmaceuticals', 'Software'
     ],
-    BLUEPRINT_SECTION_TITLES: [
-        'Document Submission',
-        'Document Processing and Verification',
-        'Compliance Review',
-        'Contract Generation and Approval',
-        'Finance Approval',
-        'Legal Review',
-        'Contract Execution',
-        'Onboarding and Provisioning',
-        'IT Escalation Review'
-    ],
-    SECTION_ROWS: {
-        'Document Submission': [
-            { title: 'Submit Onboarding Forms', assignee: 'Service Provider Partner', startsDetail: 'When the stage starts', timeToComplete: '3 days' }
-        ],
-        'Document Processing and Verification': [
-            { title: 'Extract Insurance Details from Document', assignee: 'Document Agent', startsDetail: 'after Extract Tax Details from...', timeToComplete: 'No due date set' },
-            { title: 'Extract Tax Details from Document', assignee: 'Document Agent', startsDetail: 'When the stage starts', timeToComplete: 'No due date set' },
-            { title: 'Extract Compliance Details from Form', assignee: 'Document Agent', startsDetail: 'after Extract Insurance Detail...', timeToComplete: 'No due date set' },
-            { title: 'Validate Form Completeness', assignee: 'Excel Agent', startsDetail: 'after Extract Compliance Det...', timeToComplete: 'No due date set' },
-            { title: 'Check Against Procurement Data', assignee: 'Onboarding', startsDetail: 'When the stage starts', timeToComplete: '1 day' }
-        ],
-        'Compliance Review': [
-            { title: 'Compliance Review', assignee: 'Compliance', startsDetail: 'When the stage starts', timeToComplete: '2 days' }
-        ],
-        'Contract Generation and Approval': [
-            { title: 'Generate Draft Contract', assignee: 'Document Agent', startsDetail: 'When the stage starts', timeToComplete: 'No due date set' },
-            { title: 'Analyze Draft Contract for Approval', assignee: 'Excel Agent', startsDetail: 'after Generate Draft Contract', timeToComplete: 'No due date set' },
-            { title: 'Review and Approve Contract', assignee: 'Document Agent', startsDetail: 'after Analyze Draft Contract f...', timeToComplete: '1 day' }
-        ],
-        'Finance Approval': [
-            { title: 'Finance Team Contract Approval', assignee: 'Finance', startsDetail: 'When the stage starts', timeToComplete: '2 days' }
-        ],
-        'Legal Review': [
-            { title: 'Legal Team Contract Review', assignee: 'Legal', startsDetail: 'When the stage starts', timeToComplete: 'No due date set' }
-        ],
-        'Contract Execution': [
-            { title: 'Send Contract to Service Provider', assignee: 'None', startsDetail: 'When the stage starts', timeToComplete: '1 day' },
-            { title: 'Sign Contract', assignee: 'Service Provider Partner', startsDetail: 'after Send Contract to Servic...', timeToComplete: '5 days' }
-        ],
-        'Onboarding and Provisioning': [
-            { title: 'Conduct Onboarding Training & Verify Certificate', assignee: 'Onboarding Team', startsDetail: 'When the stage starts', timeToComplete: '1 day' },
-            { title: 'IT System Provisioning', assignee: 'IT Team', startsDetail: 'after Conduct Onboarding Tr...', timeToComplete: '1 day' }
-        ],
-        'IT Escalation Review': [
-            { title: 'IT Escalation Review', assignee: 'IT Team', startsDetail: 'When the stage starts', timeToComplete: '1 day' }
-        ]
-    },
-    SECTION_HEADER_STARTS: {
-        'Document Submission': { label: 'when the workflow starts', asLink: false },
-        'Document Processing and Verification': { label: 'after the previous stage', asLink: false },
-        'Compliance Review': { label: 'when 1 condition is met', asLink: true },
-        'Contract Generation and Approval': { label: 'after the previous stage', asLink: false },
-        'Finance Approval': { label: 'when 2 conditions are met', asLink: true },
-        'Legal Review': { label: 'when 1 condition is met', asLink: true },
-        'Contract Execution': { label: 'when 1 condition is met', asLink: true },
-        'Onboarding and Provisioning': { label: 'after the previous stage', asLink: false },
-        'IT Escalation Review': { label: 'when 1 condition is met', asLink: true }
-    },
+    BLUEPRINT_SECTION_TITLES,
+    SECTION_ROWS,
+    SECTION_HEADER_STARTS,
     FORM_STAGES: [
         {
             id: 'forms',
@@ -147,17 +170,7 @@ const GENERATE_BLUEPRINT_CONFIG = {
 const SUPPLIER_BLUEPRINT_CONFIG = {
     BLUEPRINT_SECTION_TITLES: GENERATE_BLUEPRINT_CONFIG.BLUEPRINT_SECTION_TITLES,
     SECTION_ROWS: GENERATE_BLUEPRINT_CONFIG.SECTION_ROWS,
-    SECTION_START_MODE: {
-        'Document Submission': 'sequential',
-        'Document Processing and Verification': 'sequential',
-        'Compliance Review': 'sequential',
-        'Contract Generation and Approval': 'sequential',
-        'Finance Approval': 'sequential',
-        'Legal Review': 'sequential',
-        'Contract Execution': 'sequential',
-        'Onboarding and Provisioning': 'sequential',
-        'IT Escalation Review': 'sequential'
-    },
+    SECTION_START_MODE,
     STAGE_TABS: ['Stages', 'About', 'Settings'],
     RIGHT_TABS: ['Schedule', 'Data', 'Forms', 'Documents', 'Access'],
     DAY_LABELS: ['DAY 0', 'DAY 3', 'DAY 6', 'DAY 9', 'DAY 12', 'DAY 15', 'DAY 18']
