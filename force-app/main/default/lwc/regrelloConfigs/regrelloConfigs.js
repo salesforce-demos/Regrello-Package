@@ -1,75 +1,75 @@
 const SECTION_KEYS = {
-    DOCUMENT_SUBMISSION: 'Document Submission',
-    DOCUMENT_PROCESSING_AND_VERIFICATION: 'Document Processing and Verification',
-    COMPLIANCE_REVIEW: 'Compliance Review',
-    CONTRACT_GENERATION_AND_APPROVAL: 'Contract Generation and Approval',
-    FINANCE_APPROVAL: 'Finance Approval',
-    LEGAL_REVIEW: 'Legal Review',
-    CONTRACT_EXECUTION: 'Contract Execution',
-    ONBOARDING_AND_PROVISIONING: 'Onboarding and Provisioning',
-    IT_ESCALATION_REVIEW: 'IT Escalation Review'
+    DOCUMENT_SUBMISSION: { id: 'documentSubmission', title: 'Document Submission' },
+    DOCUMENT_PROCESSING_AND_VERIFICATION: { id: 'documentProcessingAndVerification', title: 'Document Processing and Verification' },
+    COMPLIANCE_REVIEW: { id: 'complianceReview', title: 'Compliance Review' },
+    CONTRACT_GENERATION_AND_APPROVAL: { id: 'contractGenerationAndApproval', title: 'Contract Generation and Approval' },
+    FINANCE_APPROVAL: { id: 'financeApproval', title: 'Finance Approval' },
+    LEGAL_REVIEW: { id: 'legalReview', title: 'Legal Review' },
+    CONTRACT_EXECUTION: { id: 'contractExecution', title: 'Contract Execution' },
+    ONBOARDING_AND_PROVISIONING: { id: 'onboardingAndProvisioning', title: 'Onboarding and Provisioning' },
+    IT_ESCALATION_REVIEW: { id: 'itEscalationReview', title: 'IT Escalation Review' }
 };
 
 const BLUEPRINT_SECTION_TITLES = [
-    SECTION_KEYS.DOCUMENT_SUBMISSION,
-    SECTION_KEYS.DOCUMENT_PROCESSING_AND_VERIFICATION,
-    SECTION_KEYS.COMPLIANCE_REVIEW,
-    SECTION_KEYS.CONTRACT_GENERATION_AND_APPROVAL,
-    SECTION_KEYS.FINANCE_APPROVAL,
-    SECTION_KEYS.LEGAL_REVIEW,
-    SECTION_KEYS.CONTRACT_EXECUTION,
-    SECTION_KEYS.ONBOARDING_AND_PROVISIONING,
-    SECTION_KEYS.IT_ESCALATION_REVIEW
+    SECTION_KEYS.DOCUMENT_SUBMISSION.title,
+    SECTION_KEYS.DOCUMENT_PROCESSING_AND_VERIFICATION.title,
+    SECTION_KEYS.COMPLIANCE_REVIEW.title,
+    SECTION_KEYS.CONTRACT_GENERATION_AND_APPROVAL.title,
+    SECTION_KEYS.FINANCE_APPROVAL.title,
+    SECTION_KEYS.LEGAL_REVIEW.title,
+    SECTION_KEYS.CONTRACT_EXECUTION.title,
+    SECTION_KEYS.ONBOARDING_AND_PROVISIONING.title,
+    SECTION_KEYS.IT_ESCALATION_REVIEW.title
 ];
 
 const SECTION_ROWS = {
-    [SECTION_KEYS.DOCUMENT_SUBMISSION]: [
+    [SECTION_KEYS.DOCUMENT_SUBMISSION.title]: [
         { title: 'Submit Onboarding Forms', assignee: 'Service Provider Partner', startsDetail: 'When the stage starts', timeToComplete: '3 days' }
     ],
-    [SECTION_KEYS.DOCUMENT_PROCESSING_AND_VERIFICATION]: [
+    [SECTION_KEYS.DOCUMENT_PROCESSING_AND_VERIFICATION.title]: [
         { title: 'Extract Insurance Details from Document', assignee: 'Document Agent', startsDetail: 'after Extract Tax Details from...', timeToComplete: 'No due date set' },
         { title: 'Extract Tax Details from Document', assignee: 'Document Agent', startsDetail: 'When the stage starts', timeToComplete: 'No due date set' },
         { title: 'Extract Compliance Details from Form', assignee: 'Document Agent', startsDetail: 'after Extract Insurance Detail...', timeToComplete: 'No due date set' },
         { title: 'Validate Form Completeness', assignee: 'Excel Agent', startsDetail: 'after Extract Compliance Det...', timeToComplete: 'No due date set' },
         { title: 'Check Against Procurement Data', assignee: 'Onboarding', startsDetail: 'When the stage starts', timeToComplete: '1 day' }
     ],
-    [SECTION_KEYS.COMPLIANCE_REVIEW]: [
+    [SECTION_KEYS.COMPLIANCE_REVIEW.title]: [
         { title: 'Compliance Review', assignee: 'Compliance', startsDetail: 'When the stage starts', timeToComplete: '2 days' }
     ],
-    [SECTION_KEYS.CONTRACT_GENERATION_AND_APPROVAL]: [
+    [SECTION_KEYS.CONTRACT_GENERATION_AND_APPROVAL.title]: [
         { title: 'Generate Draft Contract', assignee: 'Document Agent', startsDetail: 'When the stage starts', timeToComplete: 'No due date set' },
         { title: 'Analyze Draft Contract for Approval', assignee: 'Excel Agent', startsDetail: 'after Generate Draft Contract', timeToComplete: 'No due date set' },
         { title: 'Review and Approve Contract', assignee: 'Document Agent', startsDetail: 'after Analyze Draft Contract f...', timeToComplete: '1 day' }
     ],
-    [SECTION_KEYS.FINANCE_APPROVAL]: [
+    [SECTION_KEYS.FINANCE_APPROVAL.title]: [
         { title: 'Finance Team Contract Approval', assignee: 'Finance', startsDetail: 'When the stage starts', timeToComplete: '2 days' }
     ],
-    [SECTION_KEYS.LEGAL_REVIEW]: [
+    [SECTION_KEYS.LEGAL_REVIEW.title]: [
         { title: 'Legal Team Contract Review', assignee: 'Legal', startsDetail: 'When the stage starts', timeToComplete: 'No due date set' }
     ],
-    [SECTION_KEYS.CONTRACT_EXECUTION]: [
+    [SECTION_KEYS.CONTRACT_EXECUTION.title]: [
         { title: 'Send Contract to Service Provider', assignee: 'None', startsDetail: 'When the stage starts', timeToComplete: '1 day' },
         { title: 'Sign Contract', assignee: 'Service Provider Partner', startsDetail: 'after Send Contract to Servic...', timeToComplete: '5 days' }
     ],
-    [SECTION_KEYS.ONBOARDING_AND_PROVISIONING]: [
+    [SECTION_KEYS.ONBOARDING_AND_PROVISIONING.title]: [
         { title: 'Conduct Onboarding Training & Verify Certificate', assignee: 'Onboarding Team', startsDetail: 'When the stage starts', timeToComplete: '1 day' },
         { title: 'IT System Provisioning', assignee: 'IT Team', startsDetail: 'after Conduct Onboarding Tr...', timeToComplete: '1 day' }
     ],
-    [SECTION_KEYS.IT_ESCALATION_REVIEW]: [
+    [SECTION_KEYS.IT_ESCALATION_REVIEW.title]: [
         { title: 'IT Escalation Review', assignee: 'IT Team', startsDetail: 'When the stage starts', timeToComplete: '1 day' }
     ]
 };
 
 const SECTION_HEADER_STARTS = {
-    [SECTION_KEYS.DOCUMENT_SUBMISSION]: { label: 'when the workflow starts', asLink: false },
-    [SECTION_KEYS.DOCUMENT_PROCESSING_AND_VERIFICATION]: { label: 'after the previous stage', asLink: false },
-    [SECTION_KEYS.COMPLIANCE_REVIEW]: { label: 'when 1 condition is met', asLink: true },
-    [SECTION_KEYS.CONTRACT_GENERATION_AND_APPROVAL]: { label: 'after the previous stage', asLink: false },
-    [SECTION_KEYS.FINANCE_APPROVAL]: { label: 'when 2 conditions are met', asLink: true },
-    [SECTION_KEYS.LEGAL_REVIEW]: { label: 'when 1 condition is met', asLink: true },
-    [SECTION_KEYS.CONTRACT_EXECUTION]: { label: 'when 1 condition is met', asLink: true },
-    [SECTION_KEYS.ONBOARDING_AND_PROVISIONING]: { label: 'after the previous stage', asLink: false },
-    [SECTION_KEYS.IT_ESCALATION_REVIEW]: { label: 'when 1 condition is met', asLink: true }
+    [SECTION_KEYS.DOCUMENT_SUBMISSION.title]: { label: 'when the workflow starts', asLink: false },
+    [SECTION_KEYS.DOCUMENT_PROCESSING_AND_VERIFICATION.title]: { label: 'after the previous stage', asLink: false },
+    [SECTION_KEYS.COMPLIANCE_REVIEW.title]: { label: 'when 1 condition is met', asLink: true },
+    [SECTION_KEYS.CONTRACT_GENERATION_AND_APPROVAL.title]: { label: 'after the previous stage', asLink: false },
+    [SECTION_KEYS.FINANCE_APPROVAL.title]: { label: 'when 2 conditions are met', asLink: true },
+    [SECTION_KEYS.LEGAL_REVIEW.title]: { label: 'when 1 condition is met', asLink: true },
+    [SECTION_KEYS.CONTRACT_EXECUTION.title]: { label: 'when 1 condition is met', asLink: true },
+    [SECTION_KEYS.ONBOARDING_AND_PROVISIONING.title]: { label: 'after the previous stage', asLink: false },
+    [SECTION_KEYS.IT_ESCALATION_REVIEW.title]: { label: 'when 1 condition is met', asLink: true }
 };
 
 const SECTION_START_MODE = BLUEPRINT_SECTION_TITLES.reduce((acc, sectionTitle) => ({
