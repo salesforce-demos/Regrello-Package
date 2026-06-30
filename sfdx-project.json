@@ -2,7 +2,13 @@
   "packageDirectories": [
     {
       "path": "force-app",
-      "default": true
+      "default": true,
+      "definitionFile": "config/project-scratch-def.json",
+      "package": "Regrello Package",
+      "versionName": "Regrello Package 1.54",
+      "versionNumber": "1.54.0.NEXT",
+      "versionDescription": ""
+
     }
   ],
   "name": "regrello-package",

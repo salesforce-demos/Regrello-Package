@@ -1,6 +1,9 @@
 {
-  "orgName": "camilo.torres company",
-  "edition": "Developer",
+  "orgName": "Regrello Demo",
+  "country":"US",
+  "edition": "Enterprise",
+  "description":"Org to demo Regrello features",
+  "language":"en_US",
   "features": ["EnableSetPasswordInApi"],
   "settings": {
     "lightningExperienceSettings": {
