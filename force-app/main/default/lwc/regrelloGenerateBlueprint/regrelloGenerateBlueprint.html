@@ -1,0 +1,236 @@
+<template>
+    <div class="generate-container">
+        <!-- Page header -->
+        <header class="page-header">
+            <div class="header-title-row">
+                <span class="masked-icon" style={generateIconStyle}></span>
+                <h1 class="header-title">Generate blueprint</h1>
+            </div>
+            <div class="header-divider" aria-hidden="true"></div>
+        </header>
+
+        <!-- Loader overlay sits directly inside .generate-container (position:relative)
+             so it covers the whole panel and stays centred while the scroll area below scrolls -->
+        <template lwc:if={showGeneratingLoader}>
+            <div class="loader-overlay" aria-live="polite">
+                <div class="loader-box">
+                    <span class="loader2" aria-hidden="true"></span>
+                    <span class="loader-text">Generating blueprint</span>
+                </div>
+            </div>
+        </template>
+
+        <!-- Main scrollable area -->
+        <div class="main-scroll-area">
+            <div class="content-wrap">
+                <!-- Stepper -->
+                <div class="stepper">
+                    <template for:each={stepperSteps} for:item="step">
+                        <div key={step.key} class="step-item">
+                            <div class="step-track-row">
+                                <!-- Left half: invisible spacer for first item, colored connector for the rest -->
+                                <template lwc:if={step.showLeftSpacer}>
+                                    <div class="step-spacer"></div>
+                                </template>
+                                <template lwc:if={step.showLeftConnector}>
+                                    <div class={step.leftConnectorClass}></div>
+                                </template>
+                                <!-- Circle -->
+                                <div class={step.circleClass}>
+                                    <template lwc:if={step.isDone}>&#10003;</template>
+                                    <template lwc:else>{step.number}</template>
+                                </div>
+                                <!-- Right half: connector for all but last, invisible spacer for last -->
+                                <template lwc:if={step.showRightConnector}>
+                                    <div class={step.rightConnectorClass}></div>
+                                </template>
+                                <template lwc:if={step.showRightSpacer}>
+                                    <div class="step-spacer"></div>
+                                </template>
+                            </div>
+                            <div class={step.labelClass}>{step.label}</div>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- STEP 1: Input form -->
+                <template lwc:if={isFormPhase}>
+                    <div class="form-section">
+                        <div class="form-group">
+                            <label for="bp-name" class="form-label">
+                                Name <span class="required">*</span>
+                            </label>
+                            <input id="bp-name" type="text" class="form-input" value={name} onchange={handleNameInput}
+                                autocomplete="off" />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                Industry <span class="required">*</span>
+                            </label>
+                            <div class="industry-select-wrap">
+                                <button class="industry-trigger" type="button" onclick={handleIndustryToggle}>
+                                    <template lwc:if={industryHasValue}>
+                                        <span class="trigger-value">{industry}</span>
+                                    </template>
+                                    <template lwc:else>
+                                        <span class="trigger-placeholder">Select or type an industry</span>
+                                    </template>
+                                    <span class="chevron">&#8964;</span>
+                                </button>
+                                <template lwc:if={industryOpen}>
+                                    <div class="industry-dropdown" role="listbox">
+                                        <template for:each={industryOptions} for:item="opt">
+                                            <button key={opt.key} class="industry-option" type="button"
+                                                data-value={opt.value} onclick={handleIndustrySelect}>
+                                                {opt.value}
+                                            </button>
+                                        </template>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="bp-process-description" class="form-label">
+                                Process Description <span class="required">*</span>
+                            </label>
+                            <textarea id="bp-process-description" class="form-textarea" rows="6"
+                                value={processDescription} oninput={handleProcessDescriptionInput}
+                                autocomplete="off"></textarea>
+                            <p class="field-hint">
+                                Describe the process you want to generate, or upload files below.
+                            </p>
+                        </div>
+
+                        <div class="form-group">
+                            <p class="form-label">Upload file(s) <span class="required">*</span></p>
+                            <input type="file" class="file-input" multiple onchange={handleFileChange} />
+                            <div class={dropZoneClass} role="button" tabindex="0" onclick={handleFilePickerClick}
+                                ondragover={handleDragOver} ondragleave={handleDragLeave} ondrop={handleDrop}>
+                                <span class="masked-icon drop-paperclip" style={paperclipIconStyle}></span>
+                                <span class="drop-label">Click or drop to attach documents</span>
+                            </div>
+                            <p class="file-hint">
+                                Upload relevant process documentation as .pdf, .docx, .xlsx,
+                                or image file(s) to help tune the AI. Optional if you add a description above.
+                            </p>
+
+                            <template lwc:if={hasFiles}>
+                                <ul class="file-list">
+                                    <template for:each={fileList} for:item="file">
+                                        <li key={file.key} class="file-item">
+                                            <span class="file-icon"></span>
+                                            <span class="file-name">{file.name}</span>
+                                            <button class="remove-btn" type="button" data-index={file.index}
+                                                onclick={handleRemoveFile} aria-label="Remove file">&#10005;</button>
+                                        </li>
+                                    </template>
+                                </ul>
+                            </template>
+                        </div>
+
+                        <div class="form-actions">
+                            <button class={generateBtnClass} type="button" onclick={handleGenerate}>
+                                Generate
+                            </button>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- STEP 2: Blueprint generating animation -->
+                <template lwc:if={isBlueprintStep}>
+                    <div class="generating-content">
+                        <div class="title-area">
+                            <template lwc:if={showTitleSkeleton}>
+                                <div class="title-skeleton" aria-hidden="true"></div>
+                            </template>
+                            <template lwc:if={showTitleText}>
+                                <h2 class="generated-title">{titleToShow}</h2>
+                            </template>
+                        </div>
+
+                        <template lwc:if={showBlueprintSkeleton}>
+                            <div class="big-skeleton" aria-hidden="true"></div>
+                        </template>
+
+                        <template lwc:if={showBlueprintSections}>
+                            <div class="sections-list">
+                                <template for:each={visibleBlueprintSections} for:item="section">
+                                    <c-regrello-blueprint-section key={section.key} title={section.title}
+                                        visible-row-count={section.visibleRowCount}
+                                        header-starts-ready={section.headerStartsReady}></c-regrello-blueprint-section>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+
+                <!-- STEP 3: Animated form stages -->
+                <template lwc:if={isFormStageStep}>
+                    <div class="form-stage-content">
+                        <div class="title-area">
+                            <template lwc:if={showFormStageTitleSkeleton}>
+                                <div class="title-skeleton" aria-hidden="true"></div>
+                            </template>
+                            <template lwc:else>
+                                <h2 class="generated-title">{formStageTypedTitle}</h2>
+                            </template>
+                        </div>
+
+                        <template lwc:if={showFormStageSkeleton}>
+                            <div class="big-skeleton" aria-hidden="true"></div>
+                        </template>
+                        <template lwc:else>
+                            <div class="form-stage-box">
+                                <template lwc:if={showFormStageFieldSkeleton}>
+                                    <div class="field-skeleton" aria-hidden="true"></div>
+                                </template>
+                                <template for:each={formStageVisibleFieldsList} for:item="field">
+                                    <div key={field.key} class="form-field animate-in">
+                                        <label class="form-label">{field.label}</label>
+                                        <template lwc:if={field.isUpload}>
+                                            <div class="upload-zone">
+                                                <span class="masked-icon upload-paperclip"
+                                                    style={paperclipSmallIconStyle}></span>
+                                                <span class="upload-label">Click or drop to attach documents</span>
+                                            </div>
+                                        </template>
+                                        <template lwc:elseif={field.isSelect}>
+                                            <select class="form-select" disabled>
+                                                <option value="" disabled>Select…</option>
+                                                <template for:each={field.options} for:item="opt">
+                                                    <option key={opt.key} value={opt.value}>{opt.label}</option>
+                                                </template>
+                                            </select>
+                                        </template>
+                                        <template lwc:else>
+                                            <input type="text" class="form-input" readonly />
+                                        </template>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+
+                <!-- STEP 4+: Finalize / Summary -->
+                <template lwc:if={isFinalizeStep}>
+                    <div class="finalize-content" aria-live="polite">
+                        <div class="success-circle" aria-hidden="true">&#10003;</div>
+                        <h2 class="success-title">Success</h2>
+                        <p class="success-msg">
+                            Successfully generated <strong>{submittedName}</strong>
+                        </p>
+                        <p class="success-sub">Taking you to the blueprint now.</p>
+                        <div class="spinner-slot">
+                            <template lwc:if={showFinalizeSpinner}>
+                                <span class="loader2 loader2--large" aria-hidden="true"></span>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </div>
+</template>

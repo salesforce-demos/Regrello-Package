@@ -1,0 +1,461 @@
+:host {
+    display: block;
+}
+
+/* Update the card to allow the popover to 'break out' of the header */
+.section-card {
+    border-radius: 4px;
+    border: 1px solid #e2e8f0;
+    background: #fff;
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    /* overflow: hidden; */ /* REMOVE OR COMMENT THIS OUT */
+}
+
+/* Update this section */
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+    background: #f8f9fb;
+    padding: 12px 16px;
+    position: relative; /* REQUIRED for absolute children */
+    justify-content: space-between;
+    z-index: 20; /* Increased to ensure it floats over rows below */
+}
+
+/* Ensure the hover area is large enough */
+.starts-meta {
+    position: relative;
+    cursor: pointer;
+    padding: 4px; /* Gives a slightly larger hover target */
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.header-starts-popover {
+    position: absolute;
+    top: 100%; 
+    right: 0; 
+    margin-top: 8px;
+    width: 420px;
+    background: #fff;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 4px;
+    padding: 12px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    
+    /* Troubleshooting: temporarily comment these out to see if it renders at all */
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.1s ease-in-out;
+}
+
+/* --- Shared Action Toolbar Styling (Matches Screenshot) --- */
+.header-actions,
+.task-row-actions {
+    position: absolute;
+    display: inline-flex;
+    align-items: center;
+    background: #ffffff;
+    /* This creates the thin grey border seen in the image */
+    border: 1px solid #cbd5e1; 
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    overflow: hidden; /* Clips the hover states to the border radius */
+    z-index: 100;
+    transition: opacity 0.15s ease-out;
+}
+
+/* Specific positioning for Section Header Actions */
+.header-actions {
+    top: -14px; 
+    right: 16px; /* Positioned to the right side of the header */
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Specific positioning for Task Row Actions */
+.task-row-actions {
+    top: -14px;
+    right: 16px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Hover Logic */
+.section-header:hover .header-actions,
+.task-row:hover .task-row-actions {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Individual Button Styling */
+.task-action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;  /* Slightly wider to match image proportion */
+    height: 28px;
+    padding: 0;
+    margin: 0;
+    border: none;
+    background: transparent;
+    color: #475569;
+    cursor: pointer;
+    transition: background-color 0.1s;
+}
+
+/* Vertical divider between buttons */
+.task-action-btn:not(:last-child) {
+    border-right: 1px solid #e2e8f0;
+}
+
+.task-action-btn:hover {
+    background-color: #f8f9fb;
+    color: #0f172a;
+}
+
+/* Adjust icon sizes within buttons */
+.task-action-icon, 
+lightning-icon {
+    transform: scale(0.85); /* Makes the icons feel "inset" like the screenshot */
+}
+
+/* Ensure the title doesn't hog all space so meta stays visible */
+.title-container {
+    flex: 1;
+    min-width: 0;
+}
+
+/* --- Section Header Hover Logic --- */
+
+.section-header .title-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+    flex: 1;
+    min-width: 0;
+}
+
+/* Show actions when hovering the title container */
+.section-header .title-container:hover .header-actions {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.chevron-icon {
+    flex-shrink: 0;
+}
+
+.section-title {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 600;
+    color: #0f172a;
+    min-width: 0;
+}
+
+/* ... and then another one later ... */
+.starts-meta:hover .header-starts-popover {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.popover-content {
+    font-size: 12px;
+    color: #0f172a;
+    line-height: 1.5;
+}
+
+.popover-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.popover-label {
+    color: #64748b;
+    min-width: 40px;
+}
+
+.popover-indent {
+    margin-left: 48px;
+    margin-bottom: 8px;
+}
+
+.popover-tag {
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: monospace;
+    color: #334155;
+}
+
+.starts-label {
+    color: #64748b;
+}
+
+.starts-value {
+    font-weight: 700;
+    color: #334155;
+    text-align: right;
+}
+
+.starts-value--link {
+    font-weight: 700;
+    color: #0176d3;
+    text-align: right;
+}
+
+.starts-skeleton {
+    display: inline-block;
+    height: 1em;
+    width: 72px;
+    border-radius: 4px;
+    background: #e2e8f0;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+.section-body {
+    background: #fff;
+    border-radius: 0 0 4px 4px;
+    overflow: hidden;
+}
+
+.body-skeleton {
+    height: 112px;
+    width: 100%;
+    background: rgba(226, 232, 240, 0.8);
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+.rows-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.task-row {
+    position: relative;
+    background: #fff;
+    padding: 12px 16px;
+    border-top: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+.task-row:first-child {
+    border-top: none;
+}
+
+.task-row-main {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+@media (min-width: 640px) {
+    .task-row-main {
+        flex-direction: row;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .task-row-actions {
+        margin-left: auto;
+        flex-shrink: 0;
+    }
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .task-row-actions {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .task-row:hover .task-row-actions,
+    .task-row:focus-within .task-row-actions {
+        opacity: 1;
+        pointer-events: auto;
+    }
+}
+
+.task-action-btn:focus-visible {
+    outline: 2px solid #0176d3;
+    outline-offset: 1px;
+}
+
+.task-action-btn--delete {
+    color: #000000;
+}
+
+.task-action-btn--delete lightning-icon {
+    --slds-c-icon-color-foreground-default: currentColor;
+}
+
+.animate-in {
+    animation: card-slide-in 0.38s ease-out forwards;
+}
+
+.task-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    min-width: 0;
+}
+
+.task-circle {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid #cbd5e1;
+    background: #fff;
+    flex-shrink: 0;
+    box-sizing: border-box;
+}
+
+.task-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.task-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #0f172a;
+    margin: 0;
+}
+
+.task-assignee-line {
+    margin: 4px 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #64748b;
+}
+
+.assigned-to {
+    color: #64748b;
+}
+
+.assignee-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1.3;
+}
+
+.assignee-chip--agent {
+    background: #faf5ff;
+    color: #581c87;
+    box-shadow: 0 0 0 1px rgba(216, 180, 254, 0.9);
+}
+
+.assignee-chip--human {
+    background: #f1f5f9;
+    color: #1e293b;
+    box-shadow: 0 0 0 1px rgba(226, 232, 240, 0.8);
+}
+
+.assignee-chip--onboarding {
+    color: #0369a1;
+}
+
+.assignee-chip--compliance {
+    color: #0369a1;
+}
+
+.assignee-chip--finance {
+    color: #0369a1;
+}
+
+.assignee-chip--legal {
+    color: #0369a1;
+}
+
+.assignee-icon {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+}
+
+.assignee-icon--letter {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    border-radius: 20%;
+    font-size: 8px;
+    font-weight: 700;
+    line-height: 1;
+    color: #fff;
+    box-sizing: border-box;
+}
+
+.assignee-icon--letter.assignee-icon--onboarding {
+    background-color: #0284c7;
+}
+
+.assignee-icon--letter.assignee-icon--compliance {
+    background-color: #1d4ed8;
+}
+
+.assignee-icon--letter.assignee-icon--finance {
+    background-color: #0176d3;
+}
+
+.assignee-icon--letter.assignee-icon--legal {
+    background-color: #4338ca;
+}
+
+.task-timing {
+    flex-shrink: 0;
+    font-size: 12px;
+    line-height: 1.4;
+    color: #64748b;
+    text-align: right;
+}
+
+.timing-ttc {
+    margin-top: 4px;
+}
+
+.timing-label {
+    color: #94a3b8;
+}
+
+.timing-value {
+    color: #334155;
+}
+
+.timing-value--bold {
+    font-weight: 700;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+@keyframes card-slide-in {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

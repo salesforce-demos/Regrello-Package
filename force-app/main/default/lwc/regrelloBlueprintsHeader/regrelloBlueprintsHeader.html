@@ -1,0 +1,81 @@
+<template>
+    <header class="page-header">
+        <!-- Title row -->
+        <div class="header-title-row">
+            <span class="masked-icon" style={blueprintsIconStyle}></span>
+            <h1 class="header-title">Blueprints</h1>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs-row">
+            <button class={publishedTabClass} type="button" onclick={handlePublishedTab}>
+                Published blueprints
+            </button>
+            <button class={draftTabClass} type="button" onclick={handleDraftTab}>
+                Draft blueprints
+            </button>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="toolbar-row">
+            <div class="toolbar-left">
+                <!-- Search -->
+                <div class="search-wrap">
+                    <span class="search-icon-wrap masked-icon" style={searchIconInlineStyle}></span>
+                    <input
+                        type="search"
+                        placeholder="Search blueprints by name"
+                        class="search-input"
+                        aria-label="Search blueprints by name"
+                    />
+                </div>
+
+                <!-- Sort -->
+                <button class="sort-btn" type="button">
+                    <span class="masked-icon" style={sortIconStyle}></span>
+                    Last published
+                </button>
+
+                <!-- Show variants toggle -->
+                <div class="variants-wrap">
+                    <span class="variants-label">Show variants</span>
+                    <button
+                        class={toggleClass}
+                        type="button"
+                        role="switch"
+                        aria-checked={showVariants}
+                        onclick={handleToggleVariants}
+                    >
+                        <span class={toggleThumbClass}></span>
+                    </button>
+                </div>
+
+                <!-- View toggle -->
+                <div class="view-toggle">
+                    <button class={gridBtnClass} type="button" aria-label="Grid view" onclick={handleGridView}>
+                        <span class="masked-icon" style={gridIconStyle}></span>
+                    </button>
+                    <button class={listBtnClass} type="button" aria-label="List view" onclick={handleListView}>
+                        <span class="masked-icon" style={listIconStyle}></span>
+                    </button>
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination">
+                    <span class="pagination-count">0–0 of 0</span>
+                    <button class="icon-btn" type="button" aria-label="Previous page">
+                        <span class="masked-icon" style={prevIconStyle}></span>
+                    </button>
+                    <button class="icon-btn" type="button" aria-label="Next page">
+                        <span class="masked-icon" style={nextIconStyle}></span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Create button -->
+            <button class="create-btn" type="button" onclick={handleCreateBlueprint}>
+                + Create blueprint
+            </button>
+        </div>
+    </header>
+</template>

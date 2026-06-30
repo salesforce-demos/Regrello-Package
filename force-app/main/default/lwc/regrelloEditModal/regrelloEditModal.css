@@ -1,0 +1,597 @@
+:host {
+    --border-color: #c9cdd4;
+    --brand-blue: #0176d3;
+    --text-main: #0f172a;
+    --text-label: #334155;
+    --text-hint: #64748b;
+}
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* This is the only place the gray/dimmed color should come from */
+    background: rgba(0, 0, 0, 0.4); 
+}
+
+.modal-dialog {
+    background: white;
+    width: 100%;
+    max-width: 900px;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+}
+
+.modal-header {
+    padding: 16px 24px 0;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.modal-header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.modal-tabs {
+    display: flex;
+    gap: 24px;
+}
+
+.modal-tab {
+    padding: 8px 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-weight: 500;
+    color: var(--text-hint);
+    border-bottom: 2px solid transparent;
+}
+
+.modal-tab--active {
+    color: var(--brand-blue);
+    border-bottom-color: var(--brand-blue);
+}
+
+.modal-body {
+    padding: 24px;
+    overflow-y: auto;
+}
+
+/* Form Layout */
+.field {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.field-label {
+    width: 140px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-label);
+    padding-top: 10px;
+}
+
+/* ... existing code ... */
+
+.field-control-wrap {
+    position: relative;
+    flex: 1; /* This forces the container to take up all remaining horizontal space */
+}
+
+/* Ensure the input container itself fills the wrapper */
+.assignee-input-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* Vertically align pills and actions */
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 4px 8px;
+    width: 100%; /* Force full width */
+    min-height: 38px; /* Maintain height consistency */
+    background: #fff;
+}
+
+/* Ensure the rich text editor also fills the space */
+lightning-input-rich-text {
+    width: 100%;
+}
+
+.dropdown-tabs {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 12px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.dropdown-tabs span {
+    padding: 10px 4px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #64748b;
+    cursor: pointer;
+}
+
+.dropdown-tabs span.active {
+    color: #000;
+    border-bottom: 2px solid #000;
+}
+
+.dropdown-tabs .tab-item {
+    padding: 10px 4px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #64748b;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    user-select: none; /* Prevents text selection on rapid clicking */
+}
+
+.dropdown-tabs .tab-item.active {
+    color: #000;
+    border-bottom: 2px solid #000;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 10px 16px;
+    gap: 12px;
+    cursor: pointer;
+    transition: background 0.1s;
+}
+
+.dropdown-item:hover {
+    background-color: #f8fafc;
+}
+
+.item-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.item-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.item-desc {
+    font-size: 11px;
+    color: var(--text-hint);
+    line-height: 1.4;
+}
+
+.dropdown-item.selected {
+    background: #f1f5f9;
+}
+
+.item-icon {
+    font-size: 18px;
+    margin-top: 2px;
+}
+
+.purple-text { color: #9333ea; }
+
+.check-mark {
+    margin-left: auto;
+    color: #64748b;
+}
+
+.select-input-styled {
+    flex: 1;
+    padding: 10px 32px 10px 12px;
+    border: 1px solid #c9cdd4;
+    border-radius: 4px;
+    font-size: 14px;
+    background-color: #fff;
+    /* Custom arrow styling to match the screenshot */
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath stroke='%2364748b' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M1 1l4 4 4-4'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+}
+
+.flex-1 {
+    flex: 1;
+    min-width: 0; /* Prevents select boxes from overflowing */
+}
+
+/* Inputs */
+.text-input-full {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.flex-2 { flex: 2; }
+
+/* Due Stepper */
+.due-stepper {
+    display: flex;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+}
+
+/* Container for Input + Buttons on the same line */
+.due-stepper-container {
+    display: flex;
+    align-items: stretch;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background: #fff;
+    height: 38px; /* Fixed height to match surrounding selects */
+    overflow: hidden;
+}
+
+.due-number-input {
+    flex: 1;
+    min-width: 0; /* Prevents input from expanding and pushing buttons down */
+    border: none;
+    padding: 0 12px;
+    font-size: 14px;
+    outline: none;
+}
+
+.stepper-controls-horizontal {
+    display: flex;
+    flex-direction: row; /* Force horizontal */
+    width: 60px;
+    flex-shrink: 0;
+    border-left: 1px solid #f1f5f9;
+}
+
+.step-btn-alt:first-child {
+    border-right: 1px solid #f1f5f9;
+}
+
+/* Ensure the flex-row doesn't wrap its children */
+.field-row {
+    flex: 1;
+    display: flex;
+    gap: 8px;
+    align-items: center; /* Align items vertically in the center of the row */
+    flex-wrap: nowrap; /* Forces everything to stay on one line */
+}
+
+.step-btn-alt {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent; /* Removed the f8fafc gray background */
+    border: none;
+    color: var(--text-hint);
+    font-size: 18px;
+    font-weight: 400;
+    cursor: pointer;
+    padding: 0;
+    transition: color 0.2s;
+}
+
+.step-btn-alt:hover {
+    background: transparent; /* Keep background transparent on hover */
+    color: var(--brand-blue); /* Change icon color instead of background */
+}
+
+/* 1. First, the general reset for all icon buttons */
+.icon-only-btn {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: var(--text-hint);
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+    outline: none;
+    width: 24px;
+    height: 24px;
+}
+
+/* 2. Then, the specific chevron styling (must come AFTER the reset) */
+.chevron-btn {
+    /* Use background-image specifically to avoid conflict with 'background' resets */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath stroke='%2364748b' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M1 1l4 4 4-4'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    background-size: 10px 6px !important;
+}
+
+.chevron-btn:hover {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath stroke='%230176d3' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M1 1l4 4 4-4'/%3E%3C/svg%3E") !important;
+}
+
+/* 3. Ensure the actions container allows the chevron to be visible */
+.assignee-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+    height: 100%;
+    padding-right: 4px;
+}
+
+/* --- Vertical Separator --- */
+.v-sep {
+    width: 1px;
+    height: 16px;
+    background-color: #e2e8f0;
+    margin: 0 4px;
+    flex-shrink: 0;
+}
+
+/* --- Dropdown Positioning --- */
+/* Ensure the dropdown doesn't push the input field around */
+.assignee-dropdown {
+    position: absolute;
+    top: calc(100% + 4px); /* Sits exactly below the input container */
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    z-index: 100; /* Higher than everything else */
+    max-height: 280px;
+    overflow-y: auto;
+}
+
+/* Ensure the number input doesn't show default browser arrows */
+.due-number-input::-webkit-outer-spin-button,
+.due-number-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.step-btn {
+    width: 32px;
+    background: #f8fafc;
+    border: none;
+    cursor: pointer;
+}
+
+.due-input {
+    width: 50px;
+    text-align: center;
+    border: none;
+    border-left: 1px solid #e2e8f0;
+    border-right: 1px solid #e2e8f0;
+}
+
+/* Assignee Pill Styling */
+.assignee-input-container {
+    display: flex;
+    justify-content: space-between;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 4px 8px;
+}
+
+.assignee-pill {
+    display: flex;
+    align-items: center;
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 13px;
+    gap: 6px;
+}
+
+/* General Mask Setup */
+.pill-icon-box, .item-icon-mask {
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    display: inline-block;
+}
+
+/* Pill Icon: White icon on Purple Circle */
+.pill-icon-box {
+    width: 18px;
+    height: 18px;
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+
+/* New styles for Letter-based Icons */
+.pill-letter-icon, .item-letter-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 2px;
+    font-weight: 700;
+    flex-shrink: 0;
+    text-transform: uppercase;
+}
+
+.pill-letter-icon {
+    width: 18px;
+    height: 18px;
+    font-size: 10px;
+}
+
+.item-letter-icon {
+    width: 20px;
+    height: 20px;
+    font-size: 11px;
+    margin-top: 2px;
+}
+
+/* Ensure the purple-bg class doesn't override text color for letters */
+.item-letter-icon.purple-bg {
+    background-color: #3e7ab5;
+    color: white;
+}
+
+/* Dropdown Icon: Purple icon on transparent background */
+.item-icon-mask {
+    width: 20px;
+    height: 20px;
+    margin-top: 2px;
+    flex-shrink: 0;
+    background-color: #9333ea;
+}
+
+.purple-bg {
+    background-color: #9333ea !important;
+}
+
+.link-row {
+    margin-top: 8px;
+    display: flex;
+    gap: 16px;
+}
+
+.text-link {
+    background: none;
+    border: none;
+    color: var(--brand-blue);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* Footer */
+.modal-footer {
+    padding: 16px 24px;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* --- Footer Button Spacing --- */
+.footer-right {
+    display: flex;
+    gap: 8px; /* Adds the exact spacing seen in the screenshot */
+    align-items: center;
+}
+
+/* Ensure buttons have consistent height and alignment */
+.btn {
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 13px;
+    line-height: 1.5;
+    border: 1px solid transparent;
+}
+
+.btn--neutral {
+    background: white;
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+}
+
+.btn--neutral:hover {
+    background: #f8fafc;
+}
+
+.btn--brand {
+    background: var(--brand-blue);
+    color: white;
+    border: 1px solid var(--brand-blue);
+}
+
+.info-section {
+    margin-top: 32px;
+    border-top: 1px solid #f1f5f9;
+    padding-top: 16px;
+}
+
+.info-title { font-size: 14px; font-weight: 600; }
+.info-subtitle { font-size: 12px; color: var(--text-hint); margin-bottom: 16px; }
+
+.workflow-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    margin-bottom: 8px;
+}
+
+/* --- Final Backdrop "Invisibility" Fix --- */
+.backdrop {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent !important;
+    /* Explicitly kill all visual markers */
+    border: 0px solid transparent !important;
+    outline: none !important;
+    box-shadow: none !important;
+    color: transparent !important;
+    appearance: none;
+    -webkit-appearance: none;
+    /* Some browsers show a gray background on hover/active for buttons */
+    pointer-events: auto; 
+    z-index: -1;
+}
+
+/* Ensure no gray background appears during the click/active state */
+.backdrop:active {
+    background: transparent !important;
+}
+
+/* Remove the gray highlight that some browsers add on mobile/touch */
+.backdrop:focus {
+    background: transparent !important;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* --- Pill and Remove Button Fix --- */
+.assignee-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    align-items: center; /* Keeps pills and their content centered vertically */
+}
+
+.assignee-pill {
+    display: inline-flex; /* Changed from display: flex to inline-flex */
+    align-items: center;
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap; /* Prevents text from wrapping */
+}
+
+.pill-remove {
+    background: transparent;
+    border: none;
+    color: var(--text-hint);
+    cursor: pointer;
+    font-size: 14px; /* Slightly larger for easier clicking */
+    padding: 0;
+    margin-left: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    height: auto;
+    width: auto;
+}
+
+.pill-remove:hover {
+    color: #ef4444;
+    background: transparent;
+}

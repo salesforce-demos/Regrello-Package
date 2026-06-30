@@ -1,0 +1,38 @@
+<template>
+    <div class="modal-overlay">
+        <!-- Backdrop -->
+        <button class="backdrop" type="button" aria-label="Close dialog" onclick={handleBackdropClick}></button>
+
+        <!-- Dialog -->
+        <div class="modal-dialog" role="dialog" aria-modal="true" aria-label="Create blueprint">
+            <!-- Header -->
+            <div class="modal-header">
+                <h2 class="modal-title">Create blueprint</h2>
+                <button class="close-btn" type="button" aria-label="Close" onclick={handleClose}>
+                    &#10005;
+                </button>
+            </div>
+
+            <!-- Options -->
+            <div class="modal-body">
+                <template for:each={options} for:item="opt">
+                    <button
+                        key={opt.key}
+                        class={opt.rowClass}
+                        type="button"
+                        data-id={opt.id}
+                        onclick={handleOptionClick}
+                    >
+                        <span class="opt-icon-wrap">
+                            <span class="masked-icon" style={opt.iconStyle}></span>
+                        </span>
+                        <span class="opt-text">
+                            <span class="opt-title">{opt.title}</span>
+                            <span class="opt-desc">{opt.description}</span>
+                        </span>
+                    </button>
+                </template>
+            </div>
+        </div>
+    </div>
+</template>

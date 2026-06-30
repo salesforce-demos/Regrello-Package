@@ -1,0 +1,127 @@
+<template>
+    <div class="blueprint-page">
+        <!-- Page header -->
+        <header class="page-header">
+            <!-- Title area -->
+            <div class="header-title-area">
+                <div class="title-row">
+                    <h1 class="blueprint-title">{blueprintTitle}</h1>
+                    <button class="more-btn" type="button" aria-label="More options">
+                        <span class="masked-icon" style={moreIconStyle}></span>
+                    </button>
+                </div>
+                <span class="draft-badge">Draft blueprint</span>
+            </div>
+
+            <!-- Tab rows in a two-column grid -->
+            <div class="header-tabs-grid">
+                <!-- Left tabs -->
+                <div class="tabs-row tabs-row--left">
+                    <template for:each={stageTabs} for:item="tab">
+                        <button
+                            key={tab.key}
+                            class={tab.tabClass}
+                            type="button"
+                            data-tab={tab.label}
+                            onclick={handleStageTab}
+                        >
+                            {tab.label}
+                        </button>
+                    </template>
+                </div>
+                <!-- Right tabs -->
+                <div class="tabs-row tabs-row--right">
+                    <template for:each={rightTabs} for:item="tab">
+                        <button
+                            key={tab.key}
+                            class={tab.tabClass}
+                            type="button"
+                            data-tab={tab.label}
+                            onclick={handleRightTab}
+                        >
+                            {tab.label}
+                        </button>
+                    </template>
+                </div>
+            </div>
+
+            <!-- Segment + day labels row -->
+            <div class="timeline-header-grid">
+                <!-- Segment strip (left) -->
+                <div class="segment-strip-wrap">
+                    <div class="segment-strip">
+                        <template for:each={timelineSegments} for:item="seg">
+                            <div key={seg.key} class={seg.segClass}></div>
+                        </template>
+                    </div>
+                    <button class="create-workflow-btn" type="button">
+                        + Create workflow
+                    </button>
+                </div>
+                <!-- Day labels (right) -->
+                <div class="day-labels-strip">
+                    <template for:each={dayLabels} for:item="day">
+                        <div key={day.key} class={day.cellClass}>{day.label}</div>
+                    </template>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main content: workflow left + timeline right -->
+        <div class="main-grid">
+            <!-- Workflow cards (scrollable) -->
+            <div class="workflow-scroll">
+                <div class="workflow-inner">
+                    <!-- Intake card -->
+                    <div class="intake-card">
+                        <div class="intake-header">
+                            <h2 class="intake-title">Intake</h2>
+                            <button class="edit-btn" type="button">
+                                <span class="masked-icon" style={editIconStyle}></span>
+                                Edit
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Blueprint sections -->
+                    <template for:each={workflowSections} for:item="section">
+                        <div key={section.key} class="section-wrap">
+                            <c-regrello-blueprint-section
+                                title={section.title}
+                                visible-row-count={section.visibleRowCount}
+                                header-starts-ready={section.headerStartsReady}
+                            ></c-regrello-blueprint-section>
+                            <div class="add-actions">
+                                <button class="add-action-btn" type="button">+ Task</button>
+                                <button class="add-action-btn" type="button">+ Approval</button>
+                                <button class="add-action-btn" type="button">+ Automation</button>
+                                <button class="add-action-btn" type="button">+ Workflow</button>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+            <!-- Schedule timeline (right panel) — scrollTop synced with .workflow-scroll via JS -->
+            <aside class="timeline-panel" aria-label="Schedule">
+                <!-- Column stripes are fixed inside the panel (not scrolled) -->
+                <div class="timeline-stripes" aria-hidden="true">
+                    <template for:each={dayLabels} for:item="day">
+                        <div key={day.key} class={day.cellClass}></div>
+                    </template>
+                </div>
+                <!-- Scrollable area whose scrollTop is driven by the left panel -->
+                <div class="timeline-scroll">
+                    <!-- Flat list of spacers + gantt-bar rows aligned to task rows -->
+                    <template for:each={timelineItems} for:item="item">
+                        <div key={item.key} class="timeline-item" style={item.heightStyle}>
+                            <template lwc:if={item.isBar}>
+                                <div class="gantt-bar" style={item.barStyle} title={item.title}></div>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+            </aside>
+        </div>
+    </div>
+</template>

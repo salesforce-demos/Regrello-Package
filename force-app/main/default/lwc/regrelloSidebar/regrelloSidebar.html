@@ -1,0 +1,91 @@
+<template>
+    <aside class="sidebar">
+        <!-- Logo row -->
+        <div class="sidebar-top">
+            <button class="menu-btn" type="button" aria-label="Open menu">
+                <span class="masked-icon" style={menuIconStyle}></span>
+            </button>
+            <img src={dellLogoUrl} alt="" class="dell-logo" />
+        </div>
+
+        <!-- Create button -->
+        <div class="create-wrap">
+            <button class="create-btn" type="button">
+                <span class="masked-icon create-icon" style={addIconStyle}></span>
+                Create
+            </button>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="sidebar-nav">
+            <button class="nav-item" type="button">
+                <span class="masked-icon" style={searchIconStyle}></span>
+                <span>Search...</span>
+            </button>
+            <a href="#" class="nav-item">
+                <span class="masked-icon" style={notificationsIconStyle}></span>
+                <span>Notifications</span>
+            </a>
+            <a href="#" class="nav-item">
+                <span class="masked-icon" style={homeIconStyle}></span>
+                <span>Home</span>
+            </a>
+            <a href="#" class="nav-item">
+                <span class="masked-icon" style={tasksIconStyle}></span>
+                <span>Tasks</span>
+            </a>
+            <a href="#" class="nav-item">
+                <span class="masked-icon" style={starredIconStyle}></span>
+                <span>Starred</span>
+            </a>
+            <a href="#" class="nav-item">
+                <span class="masked-icon" style={documentsIconStyle}></span>
+                <span>Documents</span>
+            </a>
+            <a href="#" class="nav-item">
+                <span class="masked-icon" style={peopleIconStyle}></span>
+                <span>People &amp; Teams</span>
+            </a>
+
+            <!-- Blueprints (active, expandable) -->
+            <div class="blueprints-group">
+                <button class={blueprintsRowClass} type="button" onclick={handleBlueprintsClick}>
+                    <span class="masked-icon" style={blueprintsIconStyle}></span>
+                    <span class="nav-label">Blueprints</span>
+                </button>
+                <template lwc:if={showBlueprintsChildren}>
+                    <div class="bp-children">
+                        <div class="bp-guide" aria-hidden="true"></div>
+                        <a href="#" class="bp-child-link">
+                            <span class="masked-icon" style={fieldsIconStyle}></span>
+                            Fields
+                        </a>
+                        <a href="#" class="bp-child-link">
+                            <span class="masked-icon" style={tagsIconStyle}></span>
+                            Tags
+                        </a>
+                    </div>
+                </template>
+            </div>
+
+            <a href="#" class="nav-item">
+                <span class="masked-icon" style={adminIconStyle}></span>
+                <span>Admin</span>
+            </a>
+        </nav>
+
+        <!-- Bottom section -->
+        <div class="sidebar-footer">
+            <button class="sf-shortcut-btn" type="button" onclick={handleSalesforceClick}>
+                <span>Dell Agentforce Process Automation</span>
+                <span class="masked-icon" style={chevronStyle}></span>
+            </button>
+            <button class="user-btn" type="button">
+                <span class="user-avatar">RM</span>
+                <span class="user-info">
+                    <span class="user-name">Ravi Mehta</span>
+                </span>
+            </button>
+        </div>
+    </aside>
+</template>

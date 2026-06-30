@@ -1,0 +1,22 @@
+<template>
+    <div class="empty-state">
+        <div class="inner">
+            <div class="img-wrap">
+                <img src={emptyStateImgUrl} alt="" class="empty-img" />
+            </div>
+            <h1 class="empty-title">Welcome to Regrello</h1>
+            <p class="empty-description">
+                Blueprints you create or have access to will appear here.
+                Start by creating your first one.
+            </p>
+            <div class="cta-row">
+                <button class="btn-primary" type="button" onclick={handleCreateBlueprint}>
+                    Create blueprint
+                </button>
+                <button class="btn-secondary" type="button" onclick={handleInvitePeople}>
+                    Invite people
+                </button>
+            </div>
+        </div>
+    </div>
+</template>

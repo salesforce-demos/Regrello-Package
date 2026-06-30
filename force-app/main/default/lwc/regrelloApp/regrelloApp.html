@@ -1,0 +1,40 @@
+<template>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <c-regrello-sidebar active-item-id="blueprints" onblueprintsclick={handleBlueprintsClick}
+            onsalesforceclick={handleSalesforceClick}></c-regrello-sidebar>
+
+        <!-- Main content area -->
+        <div class="main-content">
+            <!-- Screen: Blueprints list -->
+            <template lwc:if={isBlueprintsScreen}>
+                <c-regrello-blueprints-header oncreateblueprint={handleOpenModal}></c-regrello-blueprints-header>
+                <main class="main-scroll">
+                    <c-regrello-empty-state oncreateblueprint={handleOpenModal}
+                        oninvitepeople={handleBlueprintsClick}></c-regrello-empty-state>
+                </main>
+            </template>
+
+            <!-- Screen: Generate blueprint wizard -->
+            <template lwc:elseif={isGenerateScreen}>
+                <main class="main-full">
+                    <c-regrello-generate-blueprint
+                        onopenblueprintdetail={handleOpenBlueprintDetail}></c-regrello-generate-blueprint>
+                </main>
+            </template>
+
+            <!-- Screen: Blueprint detail -->
+            <template lwc:elseif={isDetailScreen}>
+                <main class="main-full">
+                    <c-regrello-supplier-blueprint
+                        blueprint-title={blueprintDetailTitle}></c-regrello-supplier-blueprint>
+                </main>
+            </template>
+        </div>
+
+        <!-- Create blueprint modal (overlay) -->
+        <template lwc:if={createBlueprintOpen}>
+            <c-regrello-create-modal onclose={handleCloseModal} onchooseai={handleChooseAi}></c-regrello-create-modal>
+        </template>
+    </div>
+</template>

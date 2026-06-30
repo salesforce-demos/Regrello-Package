@@ -1,0 +1,170 @@
+<template>
+    <template lwc:if={showDialog}>
+        <div class="modal-overlay">
+            <button class="backdrop" type="button" aria-label="Close dialog" onclick={handleBackdropClick}></button>
+
+            <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="edit-modal-title">
+                <div class="modal-header">
+                    <div class="modal-header-top">
+                        <h2 id="edit-modal-title" class="modal-title">Edit approval task</h2>
+                        <button class="close-btn" type="button" aria-label="Close" onclick={handleClose}>&#10005;</button>
+                    </div>
+                    <div class="modal-tabs" role="tablist">
+                        <button class={tabConfigureClass} type="button" role="tab" onclick={handleTabConfigure}>Configure</button>
+                        <button class={tabTestClass} type="button" role="tab" onclick={handleTabTest}>Test</button>
+                    </div>
+                </div>
+
+                <div class="modal-body" role="tabpanel">
+                    <template lwc:if={showConfigurePanel}>
+                        <div class="field">
+                            <label class="field-label">Name <span class="req" style="color: red;">*</span></label>
+                            <div class="field-control-wrap">
+                                <input type="text" class="text-input-full" value={localName} oninput={handleNameInput} />
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label class="field-label">Start</label>
+                            <div class="field-row">
+                                <select class="select-input-styled flex-1" value={localStartPrimary} onchange={handleStartPrimaryChange}>
+                                    <option value="When the stage starts">When the stage starts</option>
+                                    <option value="After another task ends">After another task ends</option>
+                                </select>
+                                
+                                <select class="select-input-styled flex-1" value={localStartAfterTask} onchange={handleStartAfterChange}>
+                                    <template for:each={startAfterOptions} for:item="opt">
+                                        <option key={opt.key} value={opt.value}>{opt.label}</option>
+                                    </template>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label class="field-label">Due</label>
+                            <div class="field-row">
+                                <select class="select-input-styled flex-2">
+                                    <option>Time to complete</option>
+                                </select>
+                                
+                                <div class="due-stepper-container flex-1">
+                                    <input type="number" class="due-number-input" value={localDueAmount} oninput={handleDueInput} />
+                                    <div class="stepper-controls-horizontal">
+                                        <button type="button" class="step-btn-alt" onclick={handleDueDecrease}>−</button>
+                                        <button type="button" class="step-btn-alt" onclick={handleDueIncrease}>+</button>
+                                    </div>
+                                </div>
+                        
+                                <select class="select-input-styled flex-1" value={localDueUnit} onchange={handleDueUnitChange}>
+                                    <option value="Hours">Hours</option>
+                                    <option value="Days">Days</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label class="field-label">Assigned to</label>
+                            <div class="field-control-wrap" style="position: relative;">
+                                <div class="assignee-input-container">
+                                    <div class="assignee-pills">
+                                        <template for:each={assignees} for:item="pill">
+                                            <span key={pill.id} class="assignee-pill">
+                                                <template lwc:if={pill.isLetterIcon}>
+                                                    <span class="pill-letter-icon" style={pill.iconStyle}>{pill.iconText}</span>
+                                                </template>
+                                                <template lwc:else>
+                                                    <span class="pill-icon-box purple-bg" style={pill.iconStyle}></span>
+                                                </template>
+                                                {pill.label}
+                                                <button type="button" class="pill-remove" data-id={pill.id} onclick={handleRemoveAssignee}>✕</button>
+                                            </span>
+                                        </template>
+                                    </div>
+                                    
+                                    <div class="assignee-actions">
+                                        <button type="button" class="icon-only-btn" onclick={handleClearAll} aria-label="Clear all">✕</button>
+                                        <div class="v-sep"></div>
+                                        <button type="button" class="icon-only-btn chevron-btn" onclick={handleToggleDropdown} aria-label="Open dropdown"></button>
+                                    </div>
+                                </div>
+                        
+                                <template lwc:if={showDropdown}>
+                                    <div class="assignee-dropdown">
+                                        <div class="dropdown-tabs">
+                                            <template for:each={dropdownTabs} for:item="tab">
+                                                <span 
+                                                    key={tab.label} 
+                                                    class={tab.class} 
+                                                    data-label={tab.label} 
+                                                    onclick={handleDropdownTabClick}>
+                                                    {tab.label}
+                                                </span>
+                                            </template>
+                                        </div>
+                                        <div class="dropdown-list">
+                                            <template for:each={filteredItems} for:item="item">
+                                                <div key={item.id} class="dropdown-item" data-id={item.id} onclick={handleSelectAssignee}>
+                                                    <template lwc:if={item.isLetterIcon}>
+                                                        <span class="item-letter-icon" style={item.iconStyle}>{item.iconText}</span>
+                                                    </template>
+                                                    <template lwc:else>
+                                                        <span class="item-icon-mask purple-bg" style={item.iconStyle}></span>
+                                                    </template>
+                                                    <div class="item-text">
+                                                        <div class="item-name">{item.label}</div>
+                                                        <div class="item-desc">{item.desc}</div>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </template>
+                        
+                                <p class="field-hint">Assign to 1 or more specific users or fields assigned in a previous task.</p>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label class="field-label">Description</label>
+                            <div class="field-control-wrap">
+                                <lightning-input-rich-text
+                                    variant="label-hidden"
+                                    value={localDescription}
+                                    onchange={handleDescriptionInput}
+                                    disabled-categories="FORMAT_FONT,ALIGN_TEXT,REMOVE_FORMATTING">
+                                </lightning-input-rich-text>
+                                <p class="field-hint">Fields in the description will be replaced with their values at runtime.</p>
+                            </div>
+                        </div>
+
+                        <div class="info-section">
+                            <h3 class="info-title">Information for approval</h3>
+                            <p class="info-subtitle">Selecting fields to submit for approval automatically Cc's related assignees.</p>
+                            
+                            <div class="workflow-header">
+                                <span>From <strong>Workflow</strong></span>
+                                <span class="editable-rejection">Editable on rejection <lightning-icon icon-name="utility:help" size="xx-small"></lightning-icon></span>
+                            </div>
+                            
+                            <div class="field-list-item">
+                                <span class="field-type-icon">abc</span>
+                                <span class="field-name">Service Provider Company Name</span>
+                                <div class="toggle-placeholder"></div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <div class="modal-footer">
+                    <div class="footer-left">
+                        <span class="req" style="color: red;">*</span> Required
+                    </div>
+                    <div class="footer-right">
+                        <button type="button" class="btn btn--neutral" onclick={handleClose}>Cancel</button>
+                        <button type="button" class="btn btn--brand" onclick={handleSave}>Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+</template>
