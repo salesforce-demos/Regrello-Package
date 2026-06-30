@@ -1,73 +1,6 @@
 import { LightningElement, api } from 'lwc';
 import regrelloAssetsUrl from '@salesforce/resourceUrl/regrelloAssets';
-
-const BLUEPRINT_SECTION_TITLES = [
-    'Document Submission',
-    'Document Processing and Verification',
-    'Compliance Review',
-    'Contract Generation and Approval',
-    'Finance Approval',
-    'Legal Review',
-    'Contract Execution',
-    'Onboarding and Provisioning',
-    'IT Escalation Review'
-];
-
-const SECTION_ROWS = {
-    'Document Submission': [
-        { title: 'Submit Onboarding Forms', assignee: 'Service Provider Partner', startsDetail: 'When the stage starts', timeToComplete: '3 days' }
-    ],
-    'Document Processing and Verification': [
-        { title: 'Extract Insurance Details from Document', assignee: 'Document Agent', startsDetail: 'after Extract Tax Details from...', timeToComplete: 'No due date set' },
-        { title: 'Extract Tax Details from Document', assignee: 'Document Agent', startsDetail: 'When the stage starts', timeToComplete: 'No due date set' },
-        { title: 'Extract Compliance Details from Form', assignee: 'Document Agent', startsDetail: 'after Extract Insurance Detail...', timeToComplete: 'No due date set' },
-        { title: 'Validate Form Completeness', assignee: 'Excel Agent', startsDetail: 'after Extract Compliance Det...', timeToComplete: 'No due date set' },
-        { title: 'Check Against Procurement Data', assignee: 'Onboarding', startsDetail: 'When the stage starts', timeToComplete: '1 day' }
-    ],
-    'Compliance Review': [
-        { title: 'Compliance Review', assignee: 'Compliance', startsDetail: 'When the stage starts', timeToComplete: '2 days' }
-    ],
-    'Contract Generation and Approval': [
-        { title: 'Generate Draft Contract', assignee: 'Document Agent', startsDetail: 'When the stage starts', timeToComplete: 'No due date set' },
-        { title: 'Analyze Draft Contract for Approval', assignee: 'Excel Agent', startsDetail: 'after Generate Draft Contract', timeToComplete: 'No due date set' },
-        { title: 'Review and Approve Contract', assignee: 'Document Agent', startsDetail: 'after Analyze Draft Contract f...', timeToComplete: '1 day' }
-    ],
-    'Finance Approval': [
-        { title: 'Finance Team Contract Approval', assignee: 'Finance', startsDetail: 'When the stage starts', timeToComplete: '2 days' }
-    ],
-    'Legal Review': [
-        { title: 'Legal Team Contract Review', assignee: 'Legal', startsDetail: 'When the stage starts', timeToComplete: 'No due date set' }
-    ],
-    'Contract Execution': [
-        { title: 'Send Contract to Service Provider', assignee: 'None', startsDetail: 'When the stage starts', timeToComplete: '1 day' },
-        { title: 'Sign Contract', assignee: 'Service Provider Partner', startsDetail: 'after Send Contract to Servic...', timeToComplete: '5 days' }
-    ],
-    'Onboarding and Provisioning': [
-        { title: 'Conduct Onboarding Training & Verify Certificate', assignee: 'Onboarding Team', startsDetail: 'When the stage starts', timeToComplete: '1 day' },
-        { title: 'IT System Provisioning', assignee: 'IT Team', startsDetail: 'after Conduct Onboarding Tr...', timeToComplete: '1 day' }
-    ],
-    'IT Escalation Review': [
-        { title: 'IT Escalation Review', assignee: 'IT Team', startsDetail: 'When the stage starts', timeToComplete: '1 day' }
-    ]
-};
-
-// 'parallel' = starts at same time as previous section (conditional branch)
-const SECTION_START_MODE = {
-    'Document Submission': 'sequential',
-    'Document Processing and Verification': 'sequential',
-    'Compliance Review': 'sequential',
-    'Contract Generation and Approval': 'sequential',
-    'Finance Approval': 'sequential',
-    'Legal Review': 'sequential',
-    'Contract Execution': 'sequential',
-    'Onboarding and Provisioning': 'sequential',
-    'IT Escalation Review': 'sequential'
-};
-
-const STAGE_TABS = ['Stages', 'About', 'Settings'];
-const RIGHT_TABS = ['Schedule', 'Data', 'Forms', 'Documents', 'Access'];
-// Original labels: DAY 0, DAY 3 … DAY 18 — each cell = 3 days, total = 18 days
-const DAY_LABELS = ['DAY 0', 'DAY 3', 'DAY 6', 'DAY 9', 'DAY 12', 'DAY 15', 'DAY 18'];
+import { getSupplierBlueprintConfig } from 'c/regrelloConfigs';
 const TOTAL_DAYS = 18; // full timeline span in days
 
 /** Parse timeToComplete → decimal days */
@@ -81,17 +14,17 @@ function parseDays(s) {
  * Compute Gantt bar positions for every task.
  * Returns a map: sectionTitle → [{ key, leftPct, widthPct }, ...]
  */
-function computeSectionBars() {
+function computeSectionBars(cfg) {
     const result = {};
     let prevSectionStart = 0;
     let prevSectionEnd = 0;
 
-    BLUEPRINT_SECTION_TITLES.forEach(title => {
-        const sectionStart = SECTION_START_MODE[title] === 'parallel'
+    cfg.BLUEPRINT_SECTION_TITLES.forEach(title => {
+        const sectionStart = cfg.SECTION_START_MODE[title] === 'parallel'
             ? prevSectionStart
             : prevSectionEnd;
 
-        const rows = SECTION_ROWS[title];
+        const rows = cfg.SECTION_ROWS[title];
         let prevTaskEnd = sectionStart;
         let sectionEnd = sectionStart;
 
@@ -124,8 +57,6 @@ function computeSectionBars() {
     return result;
 }
 
-const SECTION_BARS = computeSectionBars();
-
 // ─── Layout constants (px) must match regrelloBlueprintSection CSS ───────────
 const WORKFLOW_PAD_TOP = 18;  // .workflow-scroll padding-top
 const INTAKE_H = 47;  // intake card: border(2) + padding(24) + text(20) + inner-border(1)
@@ -140,16 +71,16 @@ const ADD_ACTIONS_H = 62;  // .add-actions: padding(42) + button(20)
  *   { type:'spacer', key, heightStyle } — an empty div matching a non-bar left-panel element
  *   { type:'bar', key, title, barStyle, heightStyle } — a gantt bar row
  */
-function buildTimelineItems() {
-    const bars = SECTION_BARS;
+function buildTimelineItems(cfg) {
+    const bars = computeSectionBars(cfg);
     const items = [];
 
     // Top spacer: aligns the right panel with the first task-row of the first section
     const topSpacer = WORKFLOW_PAD_TOP + INTAKE_H + SECTION_GAP + 6;
     items.push({ type: 'spacer', key: 'spacer-top', heightStyle: `height:${topSpacer}px;` });
 
-    BLUEPRINT_SECTION_TITLES.forEach((title, sIdx) => {
-        const isLast = sIdx === BLUEPRINT_SECTION_TITLES.length - 1;
+    cfg.BLUEPRINT_SECTION_TITLES.forEach((title, sIdx) => {
+        const isLast = sIdx === cfg.BLUEPRINT_SECTION_TITLES.length - 1;
 
         // Section header spacer
         items.push({
@@ -189,15 +120,18 @@ function buildTimelineItems() {
     return items;
 }
 
-const TIMELINE_ITEMS = buildTimelineItems();
-
 export default class RegrelloSupplierBlueprint extends LightningElement {
     @api blueprintTitle = '';
+    @api configName = 'Dell';
 
     stageTab = 'Stages';
     rightTab = 'Schedule';
 
     _syncSetup = false;
+
+    get _cfg() {
+        return getSupplierBlueprintConfig(this.configName);
+    }
 
     get editIconStyle() {
         const url = `${regrelloAssetsUrl}/icons/edit-icon.svg`;
@@ -210,45 +144,45 @@ export default class RegrelloSupplierBlueprint extends LightningElement {
     }
 
     get stageTabs() {
-        return STAGE_TABS.map(t => ({
+        return this._cfg.STAGE_TABS.map(t => ({
             key: t, label: t,
             tabClass: `header-tab${this.stageTab === t ? ' header-tab--active' : ''}`
         }));
     }
 
     get rightTabs() {
-        return RIGHT_TABS.map(t => ({
+        return this._cfg.RIGHT_TABS.map(t => ({
             key: t, label: t,
             tabClass: `header-tab${this.rightTab === t ? ' header-tab--active' : ''}`
         }));
     }
 
     get timelineSegments() {
-        return BLUEPRINT_SECTION_TITLES.map((_, i) => ({
+        return this._cfg.BLUEPRINT_SECTION_TITLES.map((_, i) => ({
             key: i,
-            segClass: `timeline-seg${i === 0 ? ' timeline-seg--first' : ''}${i === BLUEPRINT_SECTION_TITLES.length - 1 ? ' timeline-seg--last' : ''}`
+            segClass: `timeline-seg${i === 0 ? ' timeline-seg--first' : ''}${i === this._cfg.BLUEPRINT_SECTION_TITLES.length - 1 ? ' timeline-seg--last' : ''}`
         }));
     }
 
     get dayLabels() {
-        return DAY_LABELS.map((d, i) => ({
+        return this._cfg.DAY_LABELS.map((d, i) => ({
             key: d, label: d,
             cellClass: `day-cell${i > 0 ? ' day-cell--border' : ''}${i % 2 === 0 ? ' day-cell--even' : ' day-cell--odd'}`
         }));
     }
 
     get workflowSections() {
-        return BLUEPRINT_SECTION_TITLES.map((title, i) => ({
+        return this._cfg.BLUEPRINT_SECTION_TITLES.map((title, i) => ({
             key: title, title,
-            visibleRowCount: SECTION_ROWS[title].length,
+            visibleRowCount: this._cfg.SECTION_ROWS[title].length,
             headerStartsReady: true,
-            isLast: i === BLUEPRINT_SECTION_TITLES.length - 1
+            isLast: i === this._cfg.BLUEPRINT_SECTION_TITLES.length - 1
         }));
     }
 
     /** Flat list of spacers + bar rows for the right panel */
     get timelineItems() {
-        return TIMELINE_ITEMS.map(item => ({
+        return buildTimelineItems(this._cfg).map(item => ({
             ...item,
             isBar: item.type === 'bar',
             isSpacer: item.type === 'spacer'

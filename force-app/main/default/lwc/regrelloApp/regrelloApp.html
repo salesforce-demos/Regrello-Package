@@ -1,7 +1,7 @@
 <template>
     <div class="app-container">
         <!-- Sidebar -->
-        <c-regrello-sidebar active-item-id="blueprints" onblueprintsclick={handleBlueprintsClick}
+        <c-regrello-sidebar active-item-id="blueprints" config-name={configName} onblueprintsclick={handleBlueprintsClick}
             onsalesforceclick={handleSalesforceClick}></c-regrello-sidebar>
 
         <!-- Main content area -->
@@ -19,6 +19,7 @@
             <template lwc:elseif={isGenerateScreen}>
                 <main class="main-full">
                     <c-regrello-generate-blueprint
+                        config-name={configName}
                         onopenblueprintdetail={handleOpenBlueprintDetail}></c-regrello-generate-blueprint>
                 </main>
             </template>
@@ -27,7 +28,8 @@
             <template lwc:elseif={isDetailScreen}>
                 <main class="main-full">
                     <c-regrello-supplier-blueprint
-                        blueprint-title={blueprintDetailTitle}></c-regrello-supplier-blueprint>
+                        blueprint-title={blueprintDetailTitle}
+                        config-name={configName}></c-regrello-supplier-blueprint>
                 </main>
             </template>
         </div>

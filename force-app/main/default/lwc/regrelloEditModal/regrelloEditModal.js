@@ -1,7 +1,9 @@
-import { LightningElement, api, track } from 'lwc';
+import { LightningElement, api } from 'lwc';
 import regrelloAssetsUrl from '@salesforce/resourceUrl/regrelloAssets';
+import { getEditModalStateConfig } from 'c/regrelloConfigs';
 
 export default class RegrelloEditModal extends LightningElement {
+    @api configName = 'Dell';
     @api open = false;
     @api taskName = 'Review and Approve Contract'; // Default from screenshot
     @api assigneeLabel = 'Legal';
@@ -14,43 +16,13 @@ export default class RegrelloEditModal extends LightningElement {
     @api dueUnit = 'Days';
     @api descriptionText = '';
 
-    @track activeTab = 'configure';
-    @track localName = '';
-    @track localDescription = 'Review the draft contract and the provided recommendation. Based on your assessment, decide whether to approve the contract, reject it, or escalate it to the legal team for further review.';
-    @track localDueAmount = '1';
-    @track localDueUnit = 'Days';
-    @track localStartPrimary = 'After another task ends';
-    @track localStartAfterTask = 'Analyze Draft Contract for Approval';
-    @track assignees = [
-        {
-            id: 'team-4',
-            label: 'Legal',
-            isLetterIcon: true,
-            iconText: 'L',
-            iconStyle: 'background-color: var(--brand-blue); color: #fff;'
-        }
-    ];
-    @track showDropdown = false;
-    @track availableAgents = [
-        { id: '1', label: 'AI Agent BETA', type: 'agent', iconStyle: `-webkit-mask-image: url(${regrelloAssetsUrl}/icons/profile-agent-icon.svg); mask-image: url(${regrelloAssetsUrl}/icons/profile-agent-icon.svg); background-color: #9333ea;`, desc: 'Automates tasks by analyzing and transforming data, generating documents and synthetizing information' },
-        { id: '2', label: 'Document Agent', type: 'agent', iconStyle: `-webkit-mask-image: url(${regrelloAssetsUrl}/icons/profile-agent-icon.svg); mask-image: url(${regrelloAssetsUrl}/icons/profile-agent-icon.svg); background-color: #9333ea;`, desc: 'Extracts structured data from documents, fills .docx templates, and generates PDFs' },
-        { id: '3', label: 'Document Reader Agent', type: 'agent', iconStyle: `-webkit-mask-image: url(${regrelloAssetsUrl}/icons/profile-agent-icon.svg); mask-image: url(${regrelloAssetsUrl}/icons/profile-agent-icon.svg); background-color: #9333ea;`, desc: 'Extracts fields and tables from documents' },
-        { id: '4', label: 'Docusign Agent', type: 'agent', iconStyle: `-webkit-mask-image: url(${regrelloAssetsUrl}/icons/profile-agent-icon.svg); mask-image: url(${regrelloAssetsUrl}/icons/profile-agent-icon.svg); background-color: #9333ea;`, desc: 'Makes fast decisions and routes tasks without calling any tools' },
-        { id: '5', label: 'Excel Agent BETA', type: 'agent', iconStyle: `-webkit-mask-image: url(${regrelloAssetsUrl}/icons/profile-agent-icon.svg); mask-image: url(${regrelloAssetsUrl}/icons/profile-agent-icon.svg); background-color: #9333ea;`, desc: 'Reads inputs from and writes outpust to Excel spreadsheets' },
-        { id: '6', label: 'Regrello Agent', type: 'agent', iconStyle: `-webkit-mask-image: url(${regrelloAssetsUrl}/icons/profile-agent-icon.svg); mask-image: url(${regrelloAssetsUrl}/icons/profile-agent-icon.svg); background-color: #9333ea;`, desc: 'Handles general purpose tasks including calculations and data source searches' }
-    ];
-    @track activeDropdownTab = 'AI AGENTS'; // Default tab
-    @track availableTeams = [
-        { id: 'team-1', label: 'Onboarding', type: 'team', desc: 'Handles service provider intake and initial setup.' },
-        { id: 'team-2', label: 'Compliance', type: 'team', desc: 'Verifies regulatory and internal policy adherence.' },
-        { id: 'team-3', label: 'Finance', type: 'team', desc: 'Manages budget approvals and ERP integrations.' },
-        { id: 'team-4', label: 'Legal', type: 'team', desc: 'Reviews contracts and manages legal risk.' }
-    ];
+    state = {};
 
     _prevOpen = false;
 
     connectedCallback() {
-        this.localName = this.taskName;
+        this.state = getEditModalStateConfig(this.configName);
+        this.state.localName = this.taskName;
     }
 
     renderedCallback() {
@@ -61,14 +33,14 @@ export default class RegrelloEditModal extends LightningElement {
     }
 
     hydrateFromParent() {
-        this.localName = this.taskName || '';
-        this.localDescription = this.descriptionText || this.localDescription;
-        this.localDueAmount = this.dueAmount !== undefined && this.dueAmount !== null && this.dueAmount !== ''
+        this.state.localName = this.taskName || '';
+        this.state.localDescription = this.descriptionText || this.state.localDescription;
+        this.state.localDueAmount = this.dueAmount !== undefined && this.dueAmount !== null && this.dueAmount !== ''
             ? String(this.dueAmount)
             : '1';
-        this.localDueUnit = this.dueUnit || 'Days';
-        this.localStartPrimary = this.startPrimary || this.localStartPrimary;
-        this.localStartAfterTask = this.startAfterTask || this.localStartAfterTask;
+        this.state.localDueUnit = this.dueUnit || 'Days';
+        this.state.localStartPrimary = this.startPrimary || this.state.localStartPrimary;
+        this.state.localStartAfterTask = this.startAfterTask || this.state.localStartAfterTask;
         const raw = (this.assigneeName || this.assigneeLabel || '').replace(/\s+004$/i, '').trim();
         if (raw.includes(',')) {
             const pills = raw
@@ -76,9 +48,9 @@ export default class RegrelloEditModal extends LightningElement {
                 .map((segment) => segment.trim())
                 .filter(Boolean)
                 .map((s) => this.buildPillForSeed(s, s.toLowerCase().includes('agent')));
-            this.assignees = pills.length ? pills : [this.buildPillForSeed('', false)];
+            this.state.assignees = pills.length ? pills : [this.buildPillForSeed('', false)];
         } else {
-            this.assignees = [this.buildPillForSeed(raw, this.assigneeIsAgent)];
+            this.state.assignees = [this.buildPillForSeed(raw, this.assigneeIsAgent)];
         }
     }
 
@@ -96,7 +68,7 @@ export default class RegrelloEditModal extends LightningElement {
             };
         }
 
-        const teamMatch = [...this.availableTeams]
+        const teamMatch = [...this.state.availableTeams]
             .sort((a, b) => b.label.length - a.label.length)
             .find(
                 (t) =>
@@ -144,15 +116,15 @@ export default class RegrelloEditModal extends LightningElement {
         const tabs = ['ALL', 'ROLES', 'PEOPLE', 'TEAMS', 'AI AGENTS'];
         return tabs.map(tab => ({
             label: tab,
-            class: tab === this.activeDropdownTab ? 'tab-item active' : 'tab-item'
+            class: tab === this.state.activeDropdownTab ? 'tab-item active' : 'tab-item'
         }));
     }
 
     get filteredItems() {
         let items = [];
-        const isTeamTab = this.activeDropdownTab === 'TEAMS';
+        const isTeamTab = this.state.activeDropdownTab === 'TEAMS';
 
-        if (this.activeDropdownTab === 'AI AGENTS') {
+        if (this.state.activeDropdownTab === 'AI AGENTS') {
             items = this.availableAgents;
         } else if (isTeamTab) {
             items = this.availableTeams;
@@ -180,73 +152,97 @@ export default class RegrelloEditModal extends LightningElement {
     }
 
     get dropdownClass() {
-        return this.showDropdown ? 'assignee-dropdown show' : 'assignee-dropdown';
+        return this.state.showDropdown ? 'assignee-dropdown show' : 'assignee-dropdown';
     }
 
     get showDialog() { return this.open; }
-    get showConfigurePanel() { return this.activeTab === 'configure'; }
-    get showStartAfterRow() { return this.localStartPrimary === 'After another task ends'; }
+    get showConfigurePanel() { return this.state.activeTab === 'configure'; }
+    get showStartAfterRow() { return this.state.localStartPrimary === 'After another task ends'; }
 
     get tabConfigureClass() { 
-        return this.activeTab === 'configure' ? 'modal-tab modal-tab--active' : 'modal-tab'; 
+        return this.state.activeTab === 'configure' ? 'modal-tab modal-tab--active' : 'modal-tab'; 
     }
     
     get tabTestClass() { 
-        return this.activeTab === 'test' ? 'modal-tab modal-tab--active' : 'modal-tab'; 
+        return this.state.activeTab === 'test' ? 'modal-tab modal-tab--active' : 'modal-tab'; 
     }
 
     get startAfterOptions() {
-        return [
-            { key: '1', value: 'Analyze Draft Contract for Approval', label: 'Analyze Draft Contract for Approval' },
-            { key: '2', value: 'Generate Draft Contract', label: 'Generate Draft Contract' },
-            { key: '3', value: 'Certification Check', label: 'Certification Check' }
-        ];
+        return this.state.startAfterOptions;
+    }
+
+    get localName() { return this.state.localName; }
+    get localDescription() { return this.state.localDescription; }
+    get localDueAmount() { return this.state.localDueAmount; }
+    get localDueUnit() { return this.state.localDueUnit; }
+    get localStartPrimary() { return this.state.localStartPrimary; }
+    get localStartAfterTask() { return this.state.localStartAfterTask; }
+    get assignees() { return this.state.assignees || []; }
+    get showDropdown() { return this.state.showDropdown; }
+    get availableAgents() {
+        return (this.state.availableAgents || []).map((agent) => ({
+            ...agent,
+            iconStyle: `-webkit-mask-image: url(${regrelloAssetsUrl}/icons/profile-agent-icon.svg); mask-image: url(${regrelloAssetsUrl}/icons/profile-agent-icon.svg); background-color: #9333ea;`
+        }));
+    }
+    get availableTeams() { return this.state.availableTeams || []; }
+
+    setState(partial) {
+        this.state = { ...this.state, ...partial };
     }
 
     // Handlers for the buttons
     handleRemoveAssignee(event) {
         const idToRemove = event.target.dataset.id;
-        this.assignees = this.assignees.filter(item => item.id !== idToRemove);
+        this.setState({ assignees: this.assignees.filter(item => item.id !== idToRemove) });
     }
 
     handleClearAll() {
-        this.assignees = [];
+        this.setState({ assignees: [] });
     }
 
     handleToggleDropdown(event) {
         // Stop the click from bubbling up to parents
         event.stopPropagation(); 
-        this.showDropdown = !this.showDropdown;
+        this.setState({ showDropdown: !this.showDropdown });
     }
 
     // Add this to close the dropdown when clicking the backdrop
     handleBackdropClick() {
-        this.showDropdown = false;
+        this.setState({ showDropdown: false });
         this.handleClose();
     }
 
     handleStartPrimaryChange(event) {
-        this.localStartPrimary = event.target.value;
+        this.setState({ localStartPrimary: event.target.value });
     }
 
     handleStartAfterChange(event) {
-        this.localStartAfterTask = event.target.value;
+        this.setState({ localStartAfterTask: event.target.value });
     }
 
     // Logic for Start/Due/Name remains largely the same, ensuring UI sync
-    handleTabConfigure() { this.activeTab = 'configure'; }
-    handleTabTest() { this.activeTab = 'test'; }
+    handleTabConfigure() { this.setState({ activeTab: 'configure' }); }
+    handleTabTest() { this.setState({ activeTab: 'test' }); }
 
     // Ensure buttons update the value correctly
     handleDueIncrease() {
-        this.localDueAmount = String(Number(this.localDueAmount || 0) + 1);
+        this.setState({ localDueAmount: String(Number(this.localDueAmount || 0) + 1) });
     }
 
     handleDueDecrease() {
         const current = Number(this.localDueAmount || 0);
         if (current > 1) {
-            this.localDueAmount = String(current - 1);
+            this.setState({ localDueAmount: String(current - 1) });
         }
+    }
+
+    handleDueInput(event) {
+        this.setState({ localDueAmount: event.target.value });
+    }
+
+    handleDueUnitChange(event) {
+        this.setState({ localDueUnit: event.target.value });
     }
 
     handleClose() {
@@ -254,11 +250,11 @@ export default class RegrelloEditModal extends LightningElement {
     }
 
     handleNameInput(event) {
-        this.localName = event.target.value;
+        this.setState({ localName: event.target.value });
     }
 
     handleDescriptionInput(event) {
-        this.localDescription = event.detail?.value ?? event.target?.value ?? '';
+        this.setState({ localDescription: event.detail?.value ?? event.target?.value ?? '' });
     }
 
     handleSave() {
@@ -282,8 +278,8 @@ export default class RegrelloEditModal extends LightningElement {
 
         if (item && !this.assignees.some(a => a.id === selectedId)) {
             const isTeam = item.id.includes('team');
-            
-            this.assignees = [...this.assignees, { 
+
+            this.setState({ assignees: [...this.assignees, {
                 id: item.id, 
                 label: item.label,
                 isLetterIcon: isTeam,
@@ -292,12 +288,12 @@ export default class RegrelloEditModal extends LightningElement {
                 iconStyle: isTeam
                     ? 'background-color: var(--brand-blue); color: #fff;'
                     : `-webkit-mask-image: url(${regrelloAssetsUrl}/icons/profile-agent-icon.svg); mask-image: url(${regrelloAssetsUrl}/icons/profile-agent-icon.svg); background-color: white;`
-            }];
+            }] });
         }
-        this.showDropdown = false;
+        this.setState({ showDropdown: false });
     }
 
     handleDropdownTabClick(event) {
-        this.activeDropdownTab = event.target.dataset.label;
+        this.setState({ activeDropdownTab: event.target.dataset.label });
     }
 }

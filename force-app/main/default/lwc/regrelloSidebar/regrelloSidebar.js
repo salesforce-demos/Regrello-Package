@@ -1,5 +1,6 @@
 import { LightningElement, api } from 'lwc';
 import regrelloAssetsUrl from '@salesforce/resourceUrl/regrelloAssets';
+import { getSidebarTextConfig } from 'c/regrelloConfigs';
 
 const NAV_COLOR = '#3e7ab5';
 const WHITE = '#ffffff';
@@ -11,8 +12,13 @@ function iconStyle(file, color, size = 18) {
 
 export default class RegrelloSidebar extends LightningElement {
     @api activeItemId = 'blueprints';
+    @api configName = 'Dell';
 
     blueprintsOpen = false;
+
+    get textConfig() {
+        return getSidebarTextConfig(this.configName);
+    }
 
     get dellLogoUrl() {
         return `${regrelloAssetsUrl}/images/dell-logo.png`;
@@ -39,6 +45,18 @@ export default class RegrelloSidebar extends LightningElement {
 
     get showBlueprintsChildren() {
         return this.blueprintsOpen;
+    }
+
+    get shortcutButtonText() {
+        return this.textConfig.shortcutButtonText;
+    }
+
+    get userName() {
+        return this.textConfig.userName;
+    }
+
+    get userAvatarText() {
+        return this.textConfig.userAvatarText;
     }
 
     handleBlueprintsClick() {

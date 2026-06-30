@@ -1,5 +1,6 @@
 import { LightningElement, api, track } from 'lwc';
 import regrelloAssetsUrl from '@salesforce/resourceUrl/regrelloAssets';
+import { getGenerateBlueprintConfig } from 'c/regrelloConfigs';
 
 const MODAL_SAMPLE_DESCRIPTION =
     'Review the draft contract and the provided recommendation. Based on your assessment, decide whether to approve the contract, reject it, or escalate it to the legal team for further review.';
@@ -104,56 +105,6 @@ function assigneeChipClass(category) {
     return `assignee-chip assignee-chip--${category}`;
 }
 
-const SECTION_ROWS = {
-    'Document Submission': [
-        { title: 'Submit Onboarding Forms', assignee: 'Service Provider Partner', startsDetail: 'When the stage starts', timeToComplete: '3 days' }
-    ],
-    'Document Processing and Verification': [
-        { title: 'Extract Insurance Details from Document', assignee: 'Document Agent', startsDetail: 'after Extract Tax Details from...', timeToComplete: 'No due date set' },
-        { title: 'Extract Tax Details from Document', assignee: 'Document Agent', startsDetail: 'When the stage starts', timeToComplete: 'No due date set' },
-        { title: 'Extract Compliance Details from Form', assignee: 'Document Agent', startsDetail: 'after Extract Insurance Detail...', timeToComplete: 'No due date set' },
-        { title: 'Validate Form Completeness', assignee: 'Excel Agent', startsDetail: 'after Extract Compliance Det...', timeToComplete: 'No due date set' },
-        { title: 'Check Against Procurement Data', assignee: 'Onboarding', startsDetail: 'When the stage starts', timeToComplete: '1 day' }
-    ],
-    'Compliance Review': [
-        { title: 'Compliance Review', assignee: 'Compliance', startsDetail: 'When the stage starts', timeToComplete: '2 days' }
-    ],
-    'Contract Generation and Approval': [
-        { title: 'Generate Draft Contract', assignee: 'Document Agent', startsDetail: 'When the stage starts', timeToComplete: 'No due date set' },
-        { title: 'Analyze Draft Contract for Approval', assignee: 'Excel Agent', startsDetail: 'after Generate Draft Contract', timeToComplete: 'No due date set' },
-        { title: 'Review and Approve Contract', assignee: 'Document Agent', startsDetail: 'after Analyze Draft Contract f...', timeToComplete: '1 day' }
-    ],
-    'Finance Approval': [
-        { title: 'Finance Team Contract Approval', assignee: 'Finance', startsDetail: 'When the stage starts', timeToComplete: '2 days' }
-    ],
-    'Legal Review': [
-        { title: 'Legal Team Contract Review', assignee: 'Legal', startsDetail: 'When the stage starts', timeToComplete: 'No due date set' }
-    ],
-    'Contract Execution': [
-        { title: 'Send Contract to Service Provider', assignee: 'None', startsDetail: 'When the stage starts', timeToComplete: '1 day' },
-        { title: 'Sign Contract', assignee: 'Service Provider Partner', startsDetail: 'after Send Contract to Servic...', timeToComplete: '5 days' }
-    ],
-    'Onboarding and Provisioning': [
-        { title: 'Conduct Onboarding Training & Verify Certificate', assignee: 'Onboarding Team', startsDetail: 'When the stage starts', timeToComplete: '1 day' },
-        { title: 'IT System Provisioning', assignee: 'IT Team', startsDetail: 'after Conduct Onboarding Tr...', timeToComplete: '1 day' }
-    ],
-    'IT Escalation Review': [
-        { title: 'IT Escalation Review', assignee: 'IT Team', startsDetail: 'When the stage starts', timeToComplete: '1 day' }
-    ]
-};
-
-const SECTION_HEADER_STARTS = {
-    'Document Submission': { label: 'when the workflow starts', asLink: false },
-    'Document Processing and Verification': { label: 'after the previous stage', asLink: false },
-    'Compliance Review': { label: 'when 1 condition is met', asLink: true },
-    'Contract Generation and Approval': { label: 'after the previous stage', asLink: false },
-    'Finance Approval': { label: 'when 2 conditions are met', asLink: true },
-    'Legal Review': { label: 'when 1 condition is met', asLink: true },
-    'Contract Execution': { label: 'when 1 condition is met', asLink: true },
-    'Onboarding and Provisioning': { label: 'after the previous stage', asLink: false },
-    'IT Escalation Review': { label: 'when 1 condition is met', asLink: true }
-};
-
 function maskIconStyle(iconFile, color = '#475569') {
     const url = `${regrelloAssetsUrl}/icons/${iconFile}.svg`;
     return `background-color:${color};-webkit-mask-image:url(${url});mask-image:url(${url});-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;display:inline-block;width:16px;height:16px;flex-shrink:0;`;
@@ -161,6 +112,7 @@ function maskIconStyle(iconFile, color = '#475569') {
 
 export default class RegrelloBlueprintSection extends LightningElement {
     @api title = '';
+    @api configName = 'Dell';
     @api visibleRowCount = 0;
     @api headerStartsReady = false;
 
@@ -190,6 +142,10 @@ export default class RegrelloBlueprintSection extends LightningElement {
 
     modalDescriptionText = MODAL_SAMPLE_DESCRIPTION;
 
+    get _cfg() {
+        return getGenerateBlueprintConfig(this.configName);
+    }
+
     get chevronStyle() {
         const url = `${regrelloAssetsUrl}/icons/carat-left-icon.svg`;
         return `background-color:#64748b;-webkit-mask-image:url(${url});mask-image:url(${url});-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;display:inline-block;width:12px;height:12px;flex-shrink:0;transform:rotate(-90deg);`;
@@ -204,7 +160,7 @@ export default class RegrelloBlueprintSection extends LightningElement {
     }
 
     get rows() {
-        const allRows = SECTION_ROWS[this.title] || [];
+        const allRows = this._cfg.SECTION_ROWS[this.title] || [];
         return allRows.slice(0, this.visibleRowCount).map(row => {
             const effectiveAssignee = this.assigneeOverrides[row.title] ?? row.assignee;
             const primaryAssignee = effectiveAssignee.split(',')[0].trim() || effectiveAssignee;
@@ -258,12 +214,12 @@ export default class RegrelloBlueprintSection extends LightningElement {
     // Ensure headerMeta logic matches your data
     get headerMeta() {
         // For "Supplier Approved", this returns { label: 'when 1 condition is met', asLink: true }
-        return SECTION_HEADER_STARTS[this.title] || { label: '', asLink: false };
+        return this._cfg.SECTION_HEADER_STARTS[this.title] || { label: '', asLink: false };
     }
 
     handleEditTask(event) {
         const taskTitle = event.currentTarget.dataset.taskTitle;
-        const allRows = SECTION_ROWS[this.title] || [];
+        const allRows = this._cfg.SECTION_ROWS[this.title] || [];
         const row = allRows.find((r) => r.title === taskTitle);
         if (!row) {
             return;

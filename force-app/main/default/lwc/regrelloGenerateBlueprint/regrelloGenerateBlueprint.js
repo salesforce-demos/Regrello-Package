@@ -1,156 +1,9 @@
-import { LightningElement, track } from 'lwc';
+import { LightningElement, api, track } from 'lwc';
 import regrelloAssetsUrl from '@salesforce/resourceUrl/regrelloAssets';
-
-const INDUSTRY_OPTIONS = [
-    'Automotive', 'Consumer Packaged Goods', 'Electronics', 'Fashion',
-    'Healthcare', 'Oil and Gas', 'Pharmaceuticals', 'Software'
-];
-
-const BLUEPRINT_SECTION_TITLES = [
-    'Document Submission',
-    'Document Processing and Verification',
-    'Compliance Review',
-    'Contract Generation and Approval',
-    'Finance Approval',
-    'Legal Review',
-    'Contract Execution',
-    'Onboarding and Provisioning',
-    'IT Escalation Review'
-];
-
-const SECTION_ROWS = {
-    'Document Submission': [
-        { title: 'Submit Onboarding Forms', assignee: 'Service Provider Partner', startsDetail: 'When the stage starts', timeToComplete: '3 days' }
-    ],
-    'Document Processing and Verification': [
-        { title: 'Extract Insurance Details from Document', assignee: 'Document Agent', startsDetail: 'after Extract Tax Details from...', timeToComplete: 'No due date set' },
-        { title: 'Extract Tax Details from Document', assignee: 'Document Agent', startsDetail: 'When the stage starts', timeToComplete: 'No due date set' },
-        { title: 'Extract Compliance Details from Form', assignee: 'Document Agent', startsDetail: 'after Extract Insurance Detail...', timeToComplete: 'No due date set' },
-        { title: 'Validate Form Completeness', assignee: 'Excel Agent', startsDetail: 'after Extract Compliance Det...', timeToComplete: 'No due date set' },
-        { title: 'Check Against Procurement Data', assignee: 'Onboarding', startsDetail: 'When the stage starts', timeToComplete: '1 day' }
-    ],
-    'Compliance Review': [
-        { title: 'Compliance Review', assignee: 'Compliance', startsDetail: 'When the stage starts', timeToComplete: '2 days' }
-    ],
-    'Contract Generation and Approval': [
-        { title: 'Generate Draft Contract', assignee: 'Document Agent', startsDetail: 'When the stage starts', timeToComplete: 'No due date set' },
-        { title: 'Analyze Draft Contract for Approval', assignee: 'Excel Agent', startsDetail: 'after Generate Draft Contract', timeToComplete: 'No due date set' },
-        { title: 'Review and Approve Contract', assignee: 'Document Agent', startsDetail: 'after Analyze Draft Contract f...', timeToComplete: '1 day' }
-    ],
-    'Finance Approval': [
-        { title: 'Finance Team Contract Approval', assignee: 'Finance', startsDetail: 'When the stage starts', timeToComplete: '2 days' }
-    ],
-    'Legal Review': [
-        { title: 'Legal Team Contract Review', assignee: 'Legal', startsDetail: 'When the stage starts', timeToComplete: 'No due date set' }
-    ],
-    'Contract Execution': [
-        { title: 'Send Contract to Service Provider', assignee: 'None', startsDetail: 'When the stage starts', timeToComplete: '1 day' },
-        { title: 'Sign Contract', assignee: 'Service Provider Partner', startsDetail: 'after Send Contract to Servic...', timeToComplete: '5 days' }
-    ],
-    'Onboarding and Provisioning': [
-        { title: 'Conduct Onboarding Training & Verify Certificate', assignee: 'Onboarding Team', startsDetail: 'When the stage starts', timeToComplete: '1 day' },
-        { title: 'IT System Provisioning', assignee: 'IT Team', startsDetail: 'after Conduct Onboarding Tr...', timeToComplete: '1 day' }
-    ],
-    'IT Escalation Review': [
-        { title: 'IT Escalation Review', assignee: 'IT Team', startsDetail: 'When the stage starts', timeToComplete: '1 day' }
-    ]
-};
-
-const SECTION_HEADER_STARTS = {
-    'Document Submission': { label: 'when the workflow starts', asLink: false },
-    'Document Processing and Verification': { label: 'after the previous stage', asLink: false },
-    'Compliance Review': { label: 'when 1 condition is met', asLink: true },
-    'Contract Generation and Approval': { label: 'after the previous stage', asLink: false },
-    'Finance Approval': { label: 'when 2 conditions are met', asLink: true },
-    'Legal Review': { label: 'when 1 condition is met', asLink: true },
-    'Contract Execution': { label: 'when 1 condition is met', asLink: true },
-    'Onboarding and Provisioning': { label: 'after the previous stage', asLink: false },
-    'IT Escalation Review': { label: 'when 1 condition is met', asLink: true }
-};
-
-const FORM_STAGES = [
-    {
-        id: 'forms',
-        title: 'Data Consistency Check Form',
-        fields: [
-            { id: 'supplierName', label: 'Supplier Name', type: 'text' },
-            { id: 'supplierEmail', label: 'Supplier Contact Email', type: 'text' },
-            { id: 'supplierContact', label: 'Supplier Contact Person', type: 'text' },
-            { id: 'supplierPhone', label: 'Supplier Contact Phone Number', type: 'tel' },
-            { id: 'supplierReg', label: 'Supplier Business Registration Number', type: 'text' },
-            { id: 'dataStatus', label: 'Data Consistency Status', type: 'select', options: ['Pending', 'Pass', 'Fail', 'Needs review'] },
-            { id: 'consistencyDetails', label: 'Consistency Check Details', type: 'text' }
-        ]
-    },
-    {
-        id: 'finalize',
-        title: 'Financial Document Validation Form',
-        fields: [
-            { id: 'supplierFinancialDocs', label: 'Supplier Financial Documents', type: 'upload' },
-            { id: 'financialValidationStatus', label: 'Financial Document Validation Status', type: 'select', options: ['Pending', 'Pass', 'Fail', 'Needs review'] },
-            { id: 'financialValidationComments', label: 'Financial Document Validation Comments', type: 'text' }
-        ]
-    },
-    {
-        id: 'risk',
-        title: 'Financial Risk Assessment Form',
-        fields: [
-            { id: 'docValidationStatus', label: 'Financial Document Validation Status', type: 'select', options: ['Pending', 'Pass', 'Fail', 'Needs review'] },
-            { id: 'docValidationComments', label: 'Financial Document Validation Comments', type: 'text' },
-            { id: 'supplierFinancialDocsRisk', label: 'Supplier Financial Documents', type: 'upload' },
-            { id: 'financialRiskLevel', label: 'Financial Risk Level', type: 'select', options: ['Low', 'Medium', 'High', 'Critical'] },
-            { id: 'financialRiskJustification', label: 'Financial Risk Justification', type: 'text' }
-        ]
-    },
-    {
-        id: 'security',
-        title: 'Security Practices Evaluation Form',
-        fields: [
-            { id: 'securityPosture', label: 'Security Posture', type: 'select', options: ['Strong', 'Adequate', 'Needs improvement', 'Critical'] },
-            { id: 'encryptionStandards', label: 'Encryption Standards', type: 'select', options: ['AES-256', 'TLS 1.3', 'Mixed', 'Under review'] },
-            { id: 'accessControlNotes', label: 'Access Control Review Notes', type: 'text' },
-            { id: 'securityEvidence', label: 'Security Evidence Upload', type: 'upload' },
-            { id: 'securityEvaluationSummary', label: 'Security Evaluation Summary', type: 'text' }
-        ]
-    },
-    {
-        id: 'riskScore',
-        title: 'Risk Score Calculation Form',
-        fields: [
-            { id: 'riskModel', label: 'Scoring Model', type: 'select', options: ['Standard', 'Conservative', 'Weighted', 'Custom'] },
-            { id: 'inputFactors', label: 'Input Factors', type: 'text' },
-            { id: 'weightedScore', label: 'Weighted Risk Score', type: 'text' },
-            { id: 'confidenceBand', label: 'Confidence Band', type: 'select', options: ['High', 'Medium', 'Low'] },
-            { id: 'scoreRationale', label: 'Score Rationale', type: 'text' }
-        ]
-    },
-    {
-        id: 'certification',
-        title: 'Certification Review Form',
-        fields: [
-            { id: 'certificateType', label: 'Certificate Type', type: 'select', options: ['ISO 9001', 'ISO 27001', 'SOC 2', 'Industry-specific'] },
-            { id: 'issuer', label: 'Issuing Body', type: 'text' },
-            { id: 'certStatus', label: 'Certification Status', type: 'select', options: ['Valid', 'Expiring soon', 'Expired', 'Pending renewal'] },
-            { id: 'certDocuments', label: 'Certificate Documents', type: 'upload' },
-            { id: 'certReviewNotes', label: 'Certification Review Notes', type: 'text' }
-        ]
-    },
-    {
-        id: 'supplierConfirm',
-        title: 'Supplier Confirmation Form',
-        fields: [
-            { id: 'supplierDecision', label: 'Supplier Decision', type: 'select', options: ['Confirm', 'Reject', 'Request more information'] },
-            { id: 'decisionOwner', label: 'Decision Owner', type: 'text' },
-            { id: 'decisionEmail', label: 'Decision Owner Email', type: 'text' },
-            { id: 'implementationDate', label: 'Target Implementation Date', type: 'text' },
-            { id: 'decisionComments', label: 'Decision Comments', type: 'text' }
-        ]
-    }
-];
-
-const STEPS = ['Provide inputs', 'Generate blueprint', 'Generate forms', 'Finalize import', 'Summary'];
+import { getGenerateBlueprintConfig } from 'c/regrelloConfigs';
 
 export default class RegrelloGenerateBlueprint extends LightningElement {
+    @api configName = 'Dell';
     // Form state
     @track name = '';
     @track industry = '';
@@ -182,6 +35,10 @@ export default class RegrelloGenerateBlueprint extends LightningElement {
 
     _timers = [];
 
+    get _cfg() {
+        return getGenerateBlueprintConfig(this.configName);
+    }
+
     get generateIconStyle() {
         const url = `${regrelloAssetsUrl}/icons/generate-icon.svg`;
         return `background-color:#0f172a;-webkit-mask-image:url(${url});mask-image:url(${url});-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;display:inline-block;width:22px;height:22px;flex-shrink:0;`;
@@ -207,7 +64,7 @@ export default class RegrelloGenerateBlueprint extends LightningElement {
     }
 
     get industryOptions() {
-        return INDUSTRY_OPTIONS.map(opt => ({
+        return this._cfg.INDUSTRY_OPTIONS.map(opt => ({
             value: opt,
             key: opt,
             isSelected: this.industry === opt
@@ -232,7 +89,7 @@ export default class RegrelloGenerateBlueprint extends LightningElement {
 
     get stepperSteps() {
         const activeIndex = this._stepperActiveIndex();
-        return STEPS.map((label, i) => ({
+        return this._cfg.STEPS.map((label, i) => ({
             key: label,
             label,
             isDone: i < activeIndex,
@@ -255,8 +112,8 @@ export default class RegrelloGenerateBlueprint extends LightningElement {
             leftConnectorClass: activeIndex >= i
                 ? 'step-connector step-connector--done' : 'step-connector',
             // Right half-connector (between this circle and the next one)
-            showRightConnector: i < STEPS.length - 1,
-            showRightSpacer:    i === STEPS.length - 1,
+            showRightConnector: i < this._cfg.STEPS.length - 1,
+            showRightSpacer:    i === this._cfg.STEPS.length - 1,
             rightConnectorClass: activeIndex >= i + 1
                 ? 'step-connector step-connector--done' : 'step-connector'
         }));
@@ -437,12 +294,12 @@ export default class RegrelloGenerateBlueprint extends LightningElement {
         this.typedTitle = '';
         this.titleTypingStarted = false;
         this.visibleSectionCount = 0;
-        this.sections = BLUEPRINT_SECTION_TITLES.map(t => ({
+        this.sections = this._cfg.BLUEPRINT_SECTION_TITLES.map(t => ({
             key: t, title: t,
             visibleRowCount: 0,
             headerStartsReady: false,
-            label: SECTION_HEADER_STARTS[t].label,
-            asLink: SECTION_HEADER_STARTS[t].asLink
+            label: this._cfg.SECTION_HEADER_STARTS[t].label,
+            asLink: this._cfg.SECTION_HEADER_STARTS[t].asLink
         }));
         this.subStep = 'blueprint';
         this.showLoader = true;
@@ -470,7 +327,7 @@ export default class RegrelloGenerateBlueprint extends LightningElement {
 
     _staggerSectionCards() {
         let t = 0;
-        BLUEPRINT_SECTION_TITLES.forEach((title, sIdx) => {
+        this._cfg.BLUEPRINT_SECTION_TITLES.forEach((title, sIdx) => {
             this._addTimer(setTimeout(() => {
                 this.visibleSectionCount = sIdx + 1;
                 this.sections = this.sections.map((s, i) => i === sIdx
@@ -492,8 +349,8 @@ export default class RegrelloGenerateBlueprint extends LightningElement {
         const HEADER_DELAY = 500;
         const GAP_NEXT = 1000;
 
-        BLUEPRINT_SECTION_TITLES.forEach((title, sIdx) => {
-            const rows = SECTION_ROWS[title];
+        this._cfg.BLUEPRINT_SECTION_TITLES.forEach((title, sIdx) => {
+            const rows = this._cfg.SECTION_ROWS[title];
             rows.forEach((_, rIdx) => {
                 this._addTimer(setTimeout(() => {
                     this.sections = this.sections.map((s, i) =>
@@ -508,7 +365,7 @@ export default class RegrelloGenerateBlueprint extends LightningElement {
                     i === sIdx ? { ...s, headerStartsReady: true } : s
                 );
             }, tLastRow + HEADER_DELAY));
-            if (sIdx < BLUEPRINT_SECTION_TITLES.length - 1) {
+            if (sIdx < this._cfg.BLUEPRINT_SECTION_TITLES.length - 1) {
                 t = tLastRow + GAP_NEXT;
             }
         });
@@ -522,7 +379,7 @@ export default class RegrelloGenerateBlueprint extends LightningElement {
     }
 
     _startFormStage(idx) {
-        if (idx >= FORM_STAGES.length) {
+        if (idx >= this._cfg.FORM_STAGES.length) {
             // All form stages done → go to finalize
             this.subStep = 'importFinalize';
             this._addTimer(setTimeout(() => {
@@ -539,7 +396,7 @@ export default class RegrelloGenerateBlueprint extends LightningElement {
             return;
         }
 
-        const stage = FORM_STAGES[idx];
+        const stage = this._cfg.FORM_STAGES[idx];
         this.subStep = stage.id;
         this.formStageTitle = stage.title;
         this.formStageFields = stage.fields;

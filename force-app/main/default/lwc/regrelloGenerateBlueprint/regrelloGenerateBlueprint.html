@@ -158,6 +158,7 @@
                             <div class="sections-list">
                                 <template for:each={visibleBlueprintSections} for:item="section">
                                     <c-regrello-blueprint-section key={section.key} title={section.title}
+                                        config-name={configName}
                                         visible-row-count={section.visibleRowCount}
                                         header-starts-ready={section.headerStartsReady}></c-regrello-blueprint-section>
                                 </template>
