@@ -17,6 +17,8 @@ export default class RegrelloEditModal extends LightningElement {
     @api descriptionText = '';
 
     state = {};
+    activeTab = 'configure';
+    showDropdown = false;
 
     _prevOpen = false;
 
@@ -152,19 +154,19 @@ export default class RegrelloEditModal extends LightningElement {
     }
 
     get dropdownClass() {
-        return this.state.showDropdown ? 'assignee-dropdown show' : 'assignee-dropdown';
+        return this.showDropdown ? 'assignee-dropdown show' : 'assignee-dropdown';
     }
 
     get showDialog() { return this.open; }
-    get showConfigurePanel() { return this.state.activeTab === 'configure'; }
+    get showConfigurePanel() { return this.activeTab === 'configure'; }
     get showStartAfterRow() { return this.state.localStartPrimary === 'After another task ends'; }
 
     get tabConfigureClass() { 
-        return this.state.activeTab === 'configure' ? 'modal-tab modal-tab--active' : 'modal-tab'; 
+        return this.activeTab === 'configure' ? 'modal-tab modal-tab--active' : 'modal-tab'; 
     }
     
     get tabTestClass() { 
-        return this.state.activeTab === 'test' ? 'modal-tab modal-tab--active' : 'modal-tab'; 
+        return this.activeTab === 'test' ? 'modal-tab modal-tab--active' : 'modal-tab'; 
     }
 
     get startAfterOptions() {
@@ -178,7 +180,6 @@ export default class RegrelloEditModal extends LightningElement {
     get localStartPrimary() { return this.state.localStartPrimary; }
     get localStartAfterTask() { return this.state.localStartAfterTask; }
     get assignees() { return this.state.assignees || []; }
-    get showDropdown() { return this.state.showDropdown; }
     get availableAgents() {
         return (this.state.availableAgents || []).map((agent) => ({
             ...agent,
@@ -204,12 +205,12 @@ export default class RegrelloEditModal extends LightningElement {
     handleToggleDropdown(event) {
         // Stop the click from bubbling up to parents
         event.stopPropagation(); 
-        this.setState({ showDropdown: !this.showDropdown });
+        this.showDropdown = !this.showDropdown;
     }
 
     // Add this to close the dropdown when clicking the backdrop
     handleBackdropClick() {
-        this.setState({ showDropdown: false });
+        this.showDropdown = false;
         this.handleClose();
     }
 
@@ -222,8 +223,8 @@ export default class RegrelloEditModal extends LightningElement {
     }
 
     // Logic for Start/Due/Name remains largely the same, ensuring UI sync
-    handleTabConfigure() { this.setState({ activeTab: 'configure' }); }
-    handleTabTest() { this.setState({ activeTab: 'test' }); }
+    handleTabConfigure() { this.activeTab = 'configure'; }
+    handleTabTest() { this.activeTab = 'test'; }
 
     // Ensure buttons update the value correctly
     handleDueIncrease() {
@@ -290,7 +291,7 @@ export default class RegrelloEditModal extends LightningElement {
                     : `-webkit-mask-image: url(${regrelloAssetsUrl}/icons/profile-agent-icon.svg); mask-image: url(${regrelloAssetsUrl}/icons/profile-agent-icon.svg); background-color: white;`
             }] });
         }
-        this.setState({ showDropdown: false });
+        this.showDropdown = false;
     }
 
     handleDropdownTabClick(event) {

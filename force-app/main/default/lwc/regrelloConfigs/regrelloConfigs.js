@@ -177,7 +177,6 @@ const SUPPLIER_BLUEPRINT_CONFIG = {
 };
 
 const EDIT_MODAL_STATE = {
-    activeTab: 'configure',
     localName: '',
     localDescription: 'Review the draft contract and the provided recommendation. Based on your assessment, decide whether to approve the contract, reject it, or escalate it to the legal team for further review.',
     localDueAmount: '1',
@@ -193,7 +192,6 @@ const EDIT_MODAL_STATE = {
             iconStyle: 'background-color: var(--brand-blue); color: #fff;'
         }
     ],
-    showDropdown: false,
     availableAgents: [
         { id: '1', label: 'AI Agent BETA', type: 'agent', desc: 'Automates tasks by analyzing and transforming data, generating documents and synthetizing information' },
         { id: '2', label: 'Document Agent', type: 'agent', desc: 'Extracts structured data from documents, fills .docx templates, and generates PDFs' },
