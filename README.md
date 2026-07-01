@@ -1,4 +1,4 @@
-# Regrello Package (Salesforce LWC)
+# Regrello Package
 
 This project implements a Regrello-inspired workflow experience in Lightning Web Components, orchestrated by `regrelloApp`.
 
@@ -22,16 +22,16 @@ Before the installation, make sure Communities are enabled in your org. Use the 
 
 Package Installation link (version 1.24, updated on Jun 12th 2026): 
 <div style="text-align:center; width: 100%">
-  <a>https://login.salesforce.com/packaging/installPackage.apexp?p0=04tHs000000LPjTIAW</a>
+  <a>https://login.salesforce.com/packaging/installPackage.apexp?p0=04tg7000000EH2bAAG</a>
 </div>
 
 <div style='width: 75%; margin: auto; padding: 12px;';>
-  <img src="images/gmail14.png"/>
+  <img src="images/regrello14.png"/>
 </div>
 
 >If you experience issues on installation it's recommended that you select the `Compile only the Apex in the package` option under `Advanced Options`, as shown above.
 
-## Gmail Package Setup
+## Regrello Package Setup
 
 ### Setting up the Community
 
@@ -40,21 +40,21 @@ Once the installation is finished, go to All Sites > Digital Experiences and cli
   <img src="images/regrello4.png"/>
 </div>
 
-Select the prebuilt Gmail Package LWC template.
+Select the prebuilt Build your own (Aura) template.
 <div style='width: 75%; margin: auto; padding: 12px;';>
-  <img src="images/gmail15.png"/>
+  <img src="images/regrello15.png"/>
 </div>
 
 Click on Get Started. Fill the name input, complete the URL that will have your application and click on Create.
 
 <div style="width: 75%; margin: auto; padding: 12px;">
-  <img src="images/gmail16.png"/>
+  <img src="images/regrello16.png"/>
 </div>
 
 Once this is done, head to the Builder and before you publish the community site, be sure to make it Public by clicking on the checkbox with the label 'Guest users can see and interact with the site without logging in'.
 
 <div style="width: 75%; margin: auto; padding: 12px;">
-  <img src="images/gmail13.png"/>
+  <img src="images/regrello13.png"/>
 </div>
 
 Publish the Site.
