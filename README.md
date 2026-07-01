@@ -20,7 +20,7 @@ Be sure to have Digital Experiences enabled:
 
 Before the installation, make sure Communities are enabled in your org. Use the latest package version link and login with the target org credentials when requested. You will see the installation screen, select Install for All Users and press Install.
 
-Package Installation link (version 1.24, updated on Jun 12th 2026): 
+Package Installation link (version 1.1, created on Jul 1st 2026): 
 <div style="text-align:center; width: 100%">
   <a>https://login.salesforce.com/packaging/installPackage.apexp?p0=04tg7000000EH2bAAG</a>
 </div>
@@ -40,7 +40,7 @@ Once the installation is finished, go to All Sites > Digital Experiences and cli
   <img src="images/regrello4.png"/>
 </div>
 
-Select the prebuilt Build your own (Aura) template.
+Select the prebuilt Build Your Own (Aura) template.
 <div style='width: 75%; margin: auto; padding: 12px;';>
   <img src="images/regrello15.png"/>
 </div>
