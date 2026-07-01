@@ -1,13 +1,21 @@
 {
   "orgName": "Regrello Demo",
-  "country":"US",
+  "country": "US",
   "edition": "Enterprise",
-  "description":"Org to demo Regrello features",
-  "language":"en_US",
-  "features": ["EnableSetPasswordInApi"],
+  "features": [
+    "Communities",
+    "Sites",
+    "EnableSetPasswordInApi"
+  ],
   "settings": {
     "lightningExperienceSettings": {
       "enableS1DesktopEnabled": true
+    },
+    "communitiesSettings": {
+      "enableNetworksEnabled": true
+    },
+    "experienceBundleSettings": {
+      "enableExperienceBundleMetadata": true
     },
     "mobileSettings": {
       "enableS1EncryptedStoragePref2": false

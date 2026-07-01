@@ -22,7 +22,7 @@ Before the installation, make sure Communities are enabled in your org. Use the 
 
 Package Installation link (version 1.1, created on Jul 1st 2026): 
 <div style="text-align:center; width: 100%">
-  <a>https://login.salesforce.com/packaging/installPackage.apexp?p0=04tg7000000EH2bAAG</a>
+  <a>https://login.salesforce.com/packaging/installPackage.apexp?p0=04tg7000000EJcHAAW</a>
 </div>
 
 <div style='width: 75%; margin: auto; padding: 12px;';>
@@ -40,7 +40,7 @@ Once the installation is finished, go to All Sites > Digital Experiences and cli
   <img src="images/regrello4.png"/>
 </div>
 
-Select the prebuilt Build Your Own (Aura) template.
+Select the prebuilt Regrello Package template.
 <div style='width: 75%; margin: auto; padding: 12px;';>
   <img src="images/regrello15.png"/>
 </div>
