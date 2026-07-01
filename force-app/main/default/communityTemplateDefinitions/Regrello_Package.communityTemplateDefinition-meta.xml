@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CommunityTemplateDefinition xmlns="http://soap.sforce.com/2006/04/metadata">
+    <baseTemplate>c</baseTemplate>
+    <bundlesInfo>
+        <description>Main component.</description>
+        <order>1</order>
+        <title>regrelloApp</title>
+        <type>Highlight</type>
+    </bundlesInfo>
+    <bundlesInfo>
+        <image>siteAsset_8dd108d849b64ac4b454a1f40217132a</image>
+        <order>1</order>
+        <title>siteAsset_8dd108d849b64ac4b454a1f40217132a</title>
+        <type>PreviewImage</type>
+    </bundlesInfo>
+    <category>Marketing</category>
+    <defaultThemeDefinition>Regrello_Package</defaultThemeDefinition>
+    <description>This project implements a Regrello-inspired workflow experience in Lightning Web Components, orchestrated by regrelloApp.</description>
+    <enableExtendedCleanUpOnDelete>true</enableExtendedCleanUpOnDelete>
+    <masterLabel>Regrello Package</masterLabel>
+    <pageSetting>
+        <page>Regrello_Package_Home</page>
+        <themeLayout>Regrello_Package_themeLayout_Default</themeLayout>
+    </pageSetting>
+    <publisher>Regrello Package</publisher>
+</CommunityTemplateDefinition>
