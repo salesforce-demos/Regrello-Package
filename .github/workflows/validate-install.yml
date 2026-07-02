@@ -14,7 +14,7 @@ jobs:
             - name: 'install NodeJS'
               uses: actions/setup-node@v4
               with:
-                node-version: '20'
+                node-version: '24'
 
             - name: 'Checkout the source code'
               uses: actions/checkout@v4
