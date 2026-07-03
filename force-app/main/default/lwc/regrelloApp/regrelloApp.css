@@ -22,6 +22,19 @@
     min-width: 0;
     flex-direction: column;
     overflow: hidden;
+    position: relative;
+}
+
+.screen-panel {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    min-width: 0;
+    flex-direction: column;
+}
+
+.screen-panel--hidden {
+    display: none;
 }
 
 .main-scroll {

@@ -185,11 +185,10 @@ const EDIT_MODAL_STATE = {
     localStartAfterTask: 'Analyze Draft Contract for Approval',
     assignees: [
         {
-            id: 'team-4',
-            label: 'Legal',
-            isLetterIcon: true,
-            iconText: 'L',
-            iconStyle: 'background-color: var(--brand-blue); color: #fff;'
+            id: '2',
+            label: 'Document Agent',
+            isLetterIcon: false,
+            iconStyle: '-webkit-mask-image: url(/resource/regrelloAssets/icons/profile-agent-icon.svg); mask-image: url(/resource/regrelloAssets/icons/profile-agent-icon.svg); background-color: #9333ea;'
         }
     ],
     availableAgents: [

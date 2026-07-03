@@ -6,31 +6,32 @@
 
         <!-- Main content area -->
         <div class="main-content">
-            <!-- Screen: Blueprints list -->
-            <template lwc:if={isBlueprintsScreen}>
+            <section class={blueprintsPanelClass}>
                 <c-regrello-blueprints-header oncreateblueprint={handleOpenModal}></c-regrello-blueprints-header>
                 <main class="main-scroll">
                     <c-regrello-empty-state oncreateblueprint={handleOpenModal}
                         oninvitepeople={handleBlueprintsClick}></c-regrello-empty-state>
                 </main>
-            </template>
+            </section>
 
-            <!-- Screen: Generate blueprint wizard -->
-            <template lwc:elseif={isGenerateScreen}>
+            <template lwc:if={shouldRenderGenerateScreen}>
+                <section class={generatePanelClass}>
                 <main class="main-full">
                     <c-regrello-generate-blueprint
                         config-name={configName}
                         onopenblueprintdetail={handleOpenBlueprintDetail}></c-regrello-generate-blueprint>
                 </main>
+                </section>
             </template>
 
-            <!-- Screen: Blueprint detail -->
-            <template lwc:elseif={isDetailScreen}>
+            <template lwc:if={shouldRenderDetailScreen}>
+                <section class={detailPanelClass}>
                 <main class="main-full">
                     <c-regrello-supplier-blueprint
                         blueprint-title={blueprintDetailTitle}
                         config-name={configName}></c-regrello-supplier-blueprint>
                 </main>
+                </section>
             </template>
         </div>
 

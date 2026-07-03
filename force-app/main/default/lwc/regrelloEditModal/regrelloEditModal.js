@@ -6,7 +6,7 @@ export default class RegrelloEditModal extends LightningElement {
     @api configName = 'Dell';
     @api open = false;
     @api taskName = 'Review and Approve Contract'; // Default from screenshot
-    @api assigneeLabel = 'Legal';
+    @api assigneeLabel = 'Document Agent';
     /** Raw assignee string from the task row (used to build pills when the modal opens). */
     @api assigneeName = '';
     @api assigneeIsAgent = false;
@@ -35,14 +35,17 @@ export default class RegrelloEditModal extends LightningElement {
     }
 
     hydrateFromParent() {
-        this.state.localName = this.taskName || '';
-        this.state.localDescription = this.descriptionText || this.state.localDescription;
-        this.state.localDueAmount = this.dueAmount !== undefined && this.dueAmount !== null && this.dueAmount !== ''
-            ? String(this.dueAmount)
-            : '1';
-        this.state.localDueUnit = this.dueUnit || 'Days';
-        this.state.localStartPrimary = this.startPrimary || this.state.localStartPrimary;
-        this.state.localStartAfterTask = this.startAfterTask || this.state.localStartAfterTask;
+        const nextState = {
+            ...this.state,
+            localName: this.taskName || '',
+            localDescription: this.descriptionText || this.state.localDescription,
+            localDueAmount: this.dueAmount !== undefined && this.dueAmount !== null && this.dueAmount !== ''
+                ? String(this.dueAmount)
+                : '1',
+            localDueUnit: this.dueUnit || 'Days',
+            localStartPrimary: this.startPrimary || this.state.localStartPrimary,
+            localStartAfterTask: this.startAfterTask || this.state.localStartAfterTask
+        };
         const raw = (this.assigneeName || this.assigneeLabel || '').replace(/\s+004$/i, '').trim();
         if (raw.includes(',')) {
             const pills = raw
@@ -50,10 +53,11 @@ export default class RegrelloEditModal extends LightningElement {
                 .map((segment) => segment.trim())
                 .filter(Boolean)
                 .map((s) => this.buildPillForSeed(s, s.toLowerCase().includes('agent')));
-            this.state.assignees = pills.length ? pills : [this.buildPillForSeed('', false)];
+            nextState.assignees = pills.length ? pills : [this.buildPillForSeed('', false)];
         } else {
-            this.state.assignees = [this.buildPillForSeed(raw, this.assigneeIsAgent)];
+            nextState.assignees = [this.buildPillForSeed(raw, this.assigneeIsAgent)];
         }
+        this.state = nextState;
     }
 
     /**
