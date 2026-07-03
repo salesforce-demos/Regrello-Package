@@ -28,6 +28,31 @@ export default class RegrelloApp extends LightningElement {
         this.configName = fromUrl || 'Dell';
         this.preloadAppImages();
         this.scheduleScreenPreload();
+
+        const styles = `
+            .cCenterPanel {
+                padding: 0 !important;
+                margin: 0 !important;
+                max-width: none !important;
+            }
+            .contentRegion {
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            .slds-template_default {
+                padding: 0!important;
+            }
+            .siteforceContentArea {
+                padding: 0!important;
+            }
+            .siteforceContentArea .comm-layout-column:not(:empty) {
+                padding: 0!important;
+            }
+        `;
+
+        const styleSheet = document.createElement('style');
+        styleSheet.innerText = styles;
+        document.head.appendChild(styleSheet);
     }
 
     preloadAppImages() {
