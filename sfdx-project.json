@@ -5,8 +5,8 @@
       "default": true,
       "definitionFile": "config/project-scratch-def.json",
       "package": "Regrello Package",
-      "versionName": "Regrello Package 1.54",
-      "versionNumber": "1.54.0.NEXT",
+      "versionName": "Regrello Package 1.55",
+      "versionNumber": "1.55.0.NEXT",
       "versionDescription": ""
     }
   ],
@@ -18,6 +18,7 @@
     "Regrello Package": "0Hog70000000gaLCAQ",
     "Regrello Package@0.1.0-1": "04tg7000000EH2bAAG",
     "Regrello Package@1.54.0-1": "04tg7000000EJcHAAW",
-    "Regrello Package@1.54.0-2": "04tg7000000ER3ZAAW"
+    "Regrello Package@1.54.0-2": "04tg7000000ER3ZAAW",
+    "Regrello Package@1.55.0-1": "04tg7000000ERErAAO"
   }
 }

@@ -20,9 +20,9 @@ Be sure to have Digital Experiences enabled:
 
 Before the installation, make sure Communities are enabled in your org. Use the latest package version link and login with the target org credentials when requested. You will see the installation screen, select Install for All Users and press Install.
 
-Package Installation link (version 1.54.0-2, created on Jul 3rd 2026): 
+Package Installation link (version 1.55.0-1, created on Jul 3rd 2026): 
 <div style="text-align:center; width: 100%">
-  <a>https://login.salesforce.com/packaging/installPackage.apexp?p0=04tg7000000ER3ZAAW</a>
+  <a href="https://login.salesforce.com/packaging/installPackage.apexp?p0=04tg7000000ERErAAO">https://login.salesforce.com/packaging/installPackage.apexp?p0=04tg7000000ERErAAO</a>
 </div>
 
 <div style='width: 75%; margin: auto; padding: 12px;';>
