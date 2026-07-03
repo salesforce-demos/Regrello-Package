@@ -1,0 +1,54 @@
+name: 'Test Package Install on Scratch Org'
+
+on:
+    workflow_dispatch:
+
+jobs:
+    validate-deployment-on-scratch-org:
+        runs-on: ubuntu-latest
+
+        steps:
+
+            # CLI Set Up
+
+            - name: 'install NodeJS'
+              uses: actions/setup-node@v4
+              with:
+                node-version: '24'
+
+            - name: 'Checkout the source code'
+              uses: actions/checkout@v4
+        
+            - name: 'Install Salesforce CLI'
+              run: |
+                mkdir ~/sf
+                wget https://developer.salesforce.com/media/salesforce-cli/sf/channels/stable/sf-linux-x64.tar.xz
+                tar --extract --xz --file sf-linux-x64.tar.xz --directory ~/sf --strip-components 1
+                echo "$HOME/sf/bin" >> $GITHUB_PATH
+                ~/sf/bin/sf version
+
+            - name: 'Create server.key file'
+              run: echo "${{ secrets.DEVHUB_JWT_KEY }}" > server.key
+
+            - name: 'Authenticate with the Dev Hub'
+              run: |
+                sf auth jwt grant \
+                    --client-id ${{ secrets.DEVHUB_CLIENT_ID }} \
+                    --jwt-key-file server.key \
+                    --username ${{ secrets.DEVHUB_USERNAME }} \
+                    --set-default-dev-hub
+
+            # Scratch Org deployment
+
+            - name: 'Create a Scratch Org'
+              run: |
+                sf org create scratch \
+                    --alias "MyScratch-Regrello" \
+                    --definition-file "config/project-scratch-def.json" \
+                    --duration-days "1" \
+                    --no-track-source \
+                    --set-default
+            
+            - name: 'Install current version to the Scratch Org'
+              run: |
+                sf package install --package 04tg7000000EJcHAAW --wait 10
